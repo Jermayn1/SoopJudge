@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SoopWorkshop.Backend.API/SoopWorkshop.Backend.API.csproj" Id="4511efd7-2f19-4ae6-98b4-2c572fb8cd47" />
+    <Project Path="src/SoopWorkshop.Backend.Application/SoopWorkshop.Backend.Application.csproj" Id="16e846cf-e9f8-4c4f-8675-021b693f09da" />
+    <Project Path="src/SoopWorkshop.Backend.Domain/SoopWorkshop.Backend.Domain.csproj" Id="7a029dc3-ca38-4775-818b-484de5a7a5bb" />
+    <Project Path="src/SoopWorkshop.Backend.Infrastructure/SoopWorkshop.Backend.Infrastructure.csproj" Id="cc592af2-fd58-407f-808e-8b9abecd09bb" />
+    <Project Path="src/SoopWorkshop.Shared/SoopWorkshop.Shared.csproj" Id="0daf8678-a30e-44ca-98e2-75b3830285c6" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SoopWorkshop.Tests/SoopWorkshop.Tests.csproj" Id="c1f0f28b-5a69-466f-9354-1458c503e2cd" />
+  </Folder>
+</Solution>

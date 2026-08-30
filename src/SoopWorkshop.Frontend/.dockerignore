@@ -1,0 +1,12 @@
+# Eigener Build-Kontext des Frontends (context: ./src/SoopWorkshop.Frontend).
+# Die .dockerignore im Wurzelverzeichnis gilt hier NICHT - Docker nimmt immer
+# die aus dem jeweiligen Kontext.
+
+node_modules/
+dist/
+
+# Wird im Image ohnehin neu erzeugt und wuerde den Cache je Testlauf verwerfen.
+coverage/
+
+.env
+.env.*

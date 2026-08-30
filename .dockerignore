@@ -1,0 +1,26 @@
+# Was nicht in den Build-Kontext gehört. Ohne diese Datei schickt Docker das
+# ganze Repository an den Daemon - mit node_modules und bin/obj sind das
+# hunderte Megabyte, und der Build wird spürbar langsamer.
+
+# Geheimnisse. Steht ganz oben, weil es der einzige Eintrag ist, bei dem ein
+# Vergessen mehr kostet als Zeit: die .env trägt das Datenbank- und das
+# Admin-Passwort.
+.env
+.env.*
+!.env.example
+
+# Baustände
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+artifacts/
+
+# Nicht Teil der Anwendung
+.git/
+.vs/
+.idea/
+docs/
+tests/
+**/*.md
+!README.md

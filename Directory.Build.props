@@ -1,0 +1,12 @@
+<Project>
+
+  <!-- Gilt für alle Projekte in src/ und tests/.
+       Projektspezifische Properties bleiben in der jeweiligen .csproj. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

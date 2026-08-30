@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Drei Angaben, weil ein Format allein nicht reicht: Safari benutzt
+      SVG-Favicons nicht zuverlaessig und zeigte auf dem Mac gar kein Symbol,
+      deshalb liegt das Zeichen nur noch als Rastergrafik vor. Die .ico traegt
+      16 und 32 Pixel fuer aeltere Browser, die PNGs stehen fuer alle, die ein
+      Format je Groesse waehlen koennen.
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soop Judge</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

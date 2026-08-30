@@ -1,0 +1,27 @@
+# Nur für die ENTWICKLUNG. Compose lädt diese Datei automatisch dazu, wenn
+# sie neben docker-compose.yml liegt - auf dem Server gehört sie nicht hin.
+#
+# Zweck: die Datenbank von außen erreichbar machen. Lokal laufen Backend und
+# Frontend nicht im Container, sondern direkt auf dem Rechner - sie
+# brauchen deshalb einen veröffentlichten Port.
+#
+#   docker compose up -d db      startet nur die Datenbank (der übliche Fall)
+#
+# Auf dem Server:
+#   docker compose -f docker-compose.yml up -d --build
+
+services:
+  db:
+    ports:
+      # Nur an den IPv4-Loopback binden. Ohne die Adresse bindet Docker an alle
+      # Schnittstellen und legt zusätzlich einen IPv6-Listener an. "localhost"
+      # löst unter Windows zuerst auf ::1 auf, wo der WSL-Relay horcht und die
+      # Verbindung nicht zum Container durchreicht - das äußert sich als
+      # "28P01 password authentication failed" und kostet viel Suchzeit.
+      - "127.0.0.1:5432:5432"
+    networks:
+      # In der Entwicklung zusätzlich im äußeren Netz, sonst kann der
+      # veröffentlichte Port nicht durchgereicht werden: ein Netz mit
+      # internal: true lässt keine Portfreigabe zu.
+      - intern
+      - aussen

@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <!-- NSubstitute stellt die Attrappen für die Repository- und
+         IProcessRunner-Schnittstellen. -->
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Integrationstests: echte Anwendung im Speicher gegen echtes PostgreSQL im
+       Container. Sie tragen alle [Trait("Category", "Integration")], damit sich
+       der Lauf per Filter "Category!=Integration" auch ohne Docker durchführen
+       lässt. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Respawn" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SoopWorkshop.Backend.API\SoopWorkshop.Backend.API.csproj" />
+    <ProjectReference Include="..\..\src\SoopWorkshop.Backend.Application\SoopWorkshop.Backend.Application.csproj" />
+    <ProjectReference Include="..\..\src\SoopWorkshop.Backend.Infrastructure\SoopWorkshop.Backend.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\SoopWorkshop.Shared\SoopWorkshop.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

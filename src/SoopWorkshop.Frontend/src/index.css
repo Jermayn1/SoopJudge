@@ -1,0 +1,228 @@
+@import 'tailwindcss';
+
+/* Schriften kommen als npm-Paket und werden mitgebaut — kein CDN.
+   Der Workshop läuft unter Umständen ohne Internet. */
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/jetbrains-mono';
+
+/* Setzt die prose-Klassen um, mit denen die Aufgabenbeschreibung (Markdown)
+   gesetzt wird. Ohne diese Zeile kennt Tailwind "prose" nicht und die ganze
+   Klassenkette ist still wirkungslos - eine unbekannte Utility-Klasse erzeugt
+   keinen Fehler, sie tut nichts. In Tailwind 4 wird ein Plugin hier geladen
+   und nicht mehr in einer tailwind.config.js. */
+@plugin '@tailwindcss/typography';
+
+/* Keine eigene Farbpalette. Die Komponenten benutzen Tailwinds Standardfarben
+   (slate, indigo, emerald, rose, amber) genau so wie im Referenzprojekt —
+   der Feinschliff an Farben und Abständen passiert von Hand.
+
+   Hier steht nur, was das Gerüst braucht. */
+@theme {
+  --font-sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  #root {
+    width: 100%;
+  }
+
+  /* Der Fokus muss sichtbar bleiben — ohne das ist die Seite mit der
+     Tastatur nicht bedienbar. */
+  :focus-visible {
+    outline: 2px solid var(--color-indigo-600);
+    outline-offset: 2px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Syntaxfarben für CodeWindow
+
+   highlight.js bringt fertige Themes mit; eingebunden wird keines davon.
+   Erstens brächte es eine zweite Farbwelt neben Tailwinds Palette, zweitens
+   liegt der Feinschliff an Farben beim Betreuer — und dafür muss er sie hier
+   finden und nicht in node_modules.
+
+   Die Klassenliste ist ABGELESEN, nicht geraten: die Java-Grammatik wurde auf
+   eine Beispieldatei losgelassen und die erzeugten Klassen übernommen. Was
+   hier fehlt, erbt einfach die Grundfarbe des Blocks — eine Regel für eine
+   Klasse, die nie vorkommt, wäre dagegen still wirkungslos.
+
+   Über @apply statt var(--color-…): Tailwind 4 gibt nur die Theme-Variablen
+   aus, die auch benutzt werden. Ein var(--color-violet-300) in nacktem CSS
+   fände deshalb nichts vor und fiele auf die geerbte Farbe zurück — ohne
+   Fehlermeldung, wie jede unbekannte Farbe.
+
+   Kontrast: alles unten liegt auf slate-900, im Browser nachgemessen. Die
+   300er-Töne kommen dort auf 9,6:1 (violet) bis 12,3:1 (amber), slate-400 auf
+   6,8:1. Wer die Werte von Hand nachzieht, sollte unter 4,5:1 nicht rutschen —
+   slate-500 wären nur noch 3,7:1 und fielen damit durch.
+   ══════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  .hljs-keyword,
+  .hljs-meta {
+    @apply text-violet-300;
+  }
+
+  .hljs-type,
+  .hljs-built_in,
+  .hljs-title.class_ {
+    @apply text-sky-300;
+  }
+
+  .hljs-title.function_ {
+    @apply text-emerald-300;
+  }
+
+  .hljs-string {
+    @apply text-amber-300;
+  }
+
+  .hljs-number,
+  .hljs-literal {
+    @apply text-orange-300;
+  }
+
+  .hljs-comment {
+    @apply text-slate-400 italic;
+  }
+
+  /* hljs-title ohne class_/function_, hljs-variable, hljs-params und
+     hljs-operator bleiben bewusst ohne eigene Regel: sie tragen den
+     Grundton des Blocks, und drei weitere Farben machen Code nicht
+     lesbarer. */
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Bewegung
+
+   Bewusst in CSS statt über eine Animationsbibliothek. motion/framer-motion
+   lief in diesem Aufbau in "Invalid hook call" (zweite React-Kopie in Vites
+   Vorbündelung) und blieb auf den Startwerten stehen — Abschnitte mit
+   opacity 0 blieben damit dauerhaft unsichtbar. Ein Einblenden, das im
+   Fehlerfall Inhalt verschluckt, ist schlechter als gar keins.
+
+   Alle Keyframes enden auf dem sichtbaren Zustand und laufen mit "both",
+   damit nichts unsichtbar hängen bleibt.
+   ══════════════════════════════════════════════════════════════════════ */
+
+@keyframes auf-und-ein {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes von-links-ein {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes nur-ein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hoch-und-federn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-15deg);
+  }
+  70% {
+    transform: scale(1.06) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes wackeln {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(12deg);
+  }
+  75% {
+    transform: rotate(-12deg);
+  }
+}
+
+@utility anim-auf {
+  animation: auf-und-ein 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility anim-links {
+  animation: von-links-ein 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility anim-ein {
+  animation: nur-ein 0.5s ease-out both;
+}
+
+@utility anim-feder {
+  animation: hoch-und-federn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@utility anim-wackeln {
+  animation: wackeln 2.5s ease-in-out infinite;
+}
+
+/* Ein- und Ausklappen ohne feste Höhe: Das Raster fährt die Zeile von 1fr
+   auf 0fr, das Kind muss dafür min-height 0 haben. Zuverlässiger als eine
+   Höhenanimation in JavaScript und ohne gemessene Werte. */
+@utility klapp {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 220ms ease-in-out;
+}
+
+@utility klapp-zu {
+  grid-template-rows: 0fr;
+}
+
+@utility klapp-inhalt {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

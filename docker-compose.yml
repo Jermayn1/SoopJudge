@@ -1,0 +1,176 @@
+# Betriebsaufbau: Datenbank, Backend und Frontend auf einer Maschine.
+#
+#   docker compose up -d --build   startet alles
+#   docker compose ps              zeigt den Zustand (healthy?)
+#   docker compose logs -f backend Protokoll des Backends
+#   docker compose down            stoppt alles (Daten bleiben im Volume)
+#   docker compose down -v         stoppt alles und LOESCHT die Daten
+#
+# Die Zugangsdaten stehen in .env (gitignoriert), Vorlage ist .env.example.
+# Schritt für Schritt: README.md
+#
+# In der ENTWICKLUNG lädt Compose zusätzlich docker-compose.override.yml und
+# veröffentlicht damit den Datenbank-Port. Auf dem Server liegt die Datei
+# nicht, dort bleibt die Datenbank im internen Netz.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: soopworkshop-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-soopworkshop}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD fehlt - .env aus .env.example anlegen}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - intern
+
+    # ------------------------------------------------------------------------
+    # Gleicht das Passwort bei JEDEM Start an die .env an.
+    #
+    # Warum das nötig ist: POSTGRES_PASSWORD wirkt nur beim ERSTEN Anlegen des
+    # Datenverzeichnisses. Wird der Wert später in der .env geändert, behält
+    # die Datenbank ihr altes - das Backend kommt dann nicht mehr hinein und
+    # meldet "28P01 password authentication failed". Der Fehler sieht aus wie
+    # ein Tippfehler, obwohl beide Seiten für sich stimmen.
+    #
+    # Bisher musste man dafür von Hand sync-db-password.ps1 aufrufen. Jetzt
+    # erledigt es der Start selbst: sobald die Datenbank bereit ist, setzt ein
+    # ALTER USER das Passwort auf den Wert aus der .env. Das ist idempotent -
+    # stimmt es schon, ändert der Befehl nichts.
+    #
+    # Der psql-Aufruf läuft über den lokalen Socket INNERHALB des Containers,
+    # und der ist in der pg_hba.conf des Images auf "trust" gesetzt. Deshalb
+    # braucht dieser Schritt das alte Passwort nicht zu kennen - genau das
+    # macht die Selbstheilung überhaupt möglich.
+    #
+    # exec am Ende ist Pflicht: postgres muss PID 1 bleiben, sonst kommen
+    # Signale (docker stop) nicht an und der Container wird hart abgeräumt.
+    # ------------------------------------------------------------------------
+    command:
+      - sh
+      - -c
+      - |
+        (
+          until pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -q; do sleep 1; done
+          psql -v ON_ERROR_STOP=1 --username "$$POSTGRES_USER" --dbname "$$POSTGRES_DB" \
+            -c "ALTER USER \"$$POSTGRES_USER\" WITH PASSWORD '$$POSTGRES_PASSWORD';" \
+            && echo "Datenbank-Passwort an die .env angeglichen."
+        ) &
+        exec docker-entrypoint.sh postgres
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-soopworkshop}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      # Wurzelverzeichnis, nicht der Projektordner: das Dockerfile braucht
+      # Directory.Build.props, Directory.Packages.props und lib/.
+      context: .
+      dockerfile: src/SoopWorkshop.Backend.API/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+      # Im Container heißt die Datenbank wie ihr Dienst, nicht 127.0.0.1 - die
+      # Auflösung macht Docker im internen Netz.
+      ConnectionStrings__DefaultConnection: >-
+        Host=db;Port=5432;Database=${POSTGRES_DB:-soopworkshop};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}
+
+      Admin__Password: ${Admin__Password:?Admin__Password fehlt - .env aus .env.example anlegen}
+
+      # Leer, und das ist richtig: hinter dem Reverse Proxy liegen Seite und API
+      # auf demselben Ursprung, es gibt keine fremde Herkunft mehr zu erlauben.
+      Cors__AllowedOrigins__0: ""
+
+      Evaluation__MaxConcurrency: ${Evaluation__MaxConcurrency:-4}
+      Evaluation__CompileTimeoutSeconds: ${Evaluation__CompileTimeoutSeconds:-30}
+      Evaluation__RunTimeoutSeconds: ${Evaluation__RunTimeoutSeconds:-10}
+      Evaluation__QueueCapacity: ${Evaluation__QueueCapacity:-100}
+
+      Database__MigrateOnStartup: ${Database__MigrateOnStartup:-true}
+
+    networks:
+      - intern
+
+    volumes:
+      # Mit diesen Schlüsseln verschlüsselt ASP.NET das Anmelde-Cookie. Ohne
+      # das Volume liegen sie im Container: ein "up -d --build" nach einer
+      # Aktualisierung erzeugt neue, und die bestehende Anmeldung des Betreuers
+      # wird ungültig - kommentarlos, mitten im Workshop.
+      - dataprotection:/home/app/.aspnet/DataProtection-Keys
+
+    # ------------------------------------------------------------------------
+    # Hier läuft FREMDER CODE. Jede Abgabe wird kompiliert und ausgeführt.
+    #
+    # Das interne Netz ist die wirksamste einzelne Maßnahme des ganzen
+    # Aufbaus: der Container hat keine Route ins LAN und keine ins Internet.
+    # Er braucht auch keine - das JUnit-JAR liegt im Image, es wird nichts
+    # nachgeladen. Ohne das könnte die Abgabe eines Teilnehmers mit einer
+    # Zeile "new Socket(...)" das Firmennetz erreichen.
+    #
+    # Die Grenzen darunter sind der Unterschied zwischen einer Endlosschleife,
+    # die einen Container ausbremst, und einer, die die VM erlegt.
+    #
+    # Was das NICHT leistet: die Abgabe erreicht weiterhin die Datenbank und
+    # kann den Container belasten. Echte Isolation je Abgabe (ein eigener
+    # Container pro Auswertung) bleibt eine spätere Ausbaustufe.
+    # ------------------------------------------------------------------------
+    # Über die .env anpassbar, falls die VM kleiner ausfällt als geplant.
+    # Zu klein gewählt wird der Container beim Kompilieren einer Abgabe
+    # abgeräumt (im Log als OOMKilled) - dann eher die Grenze anheben als die
+    # Parallelität senken.
+    mem_limit: ${BACKEND_MEMORY:-2g}
+    cpus: ${BACKEND_CPUS:-2.0}
+    pids_limit: 512
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      # Der erste Start wendet die Migrationen an, das darf dauern.
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./src/SoopWorkshop.Frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        # Nicht bloß "gestartet", sondern gesund. Sonst beantwortet der Proxy
+        # in den ersten Sekunden Aufrufe mit 502, während das Backend noch
+        # migriert - und der erste Eindruck ist eine Fehlerseite.
+        condition: service_healthy
+    ports:
+      # Der einzige veröffentlichte Port des ganzen Aufbaus. Nur http - die
+      # Begründung steht in der README unter "Grenzen".
+      #
+      # Über HTTP_PORT in der .env änderbar. Gebraucht wird das, wenn Port 80
+      # schon belegt ist (unter Windows häufig durch IIS oder eine
+      # Hyper-V-Portreservierung) oder wenn die IT einen anderen Port vorgibt.
+      - "${HTTP_PORT:-80}:80"
+    networks:
+      # In BEIDEN Netzen, und damit die einzige Brücke: von außen erreichbar
+      # und zugleich der einzige Weg zum Backend.
+      - intern
+      - aussen
+
+networks:
+  intern:
+    # Kein Weg nach draußen. Trägt die Abschottung aus dem Kommentar oben.
+    internal: true
+  aussen:
+
+volumes:
+  pgdata:
+  dataprotection:
