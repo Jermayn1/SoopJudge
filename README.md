@@ -293,9 +293,9 @@ wiederholen.
 
 [MIT](LICENSE). Verwenden, ändern und weitergeben ist frei, auch kommerziell.
 
-Unter `lib/` liegt `junit-platform-console-standalone` (JUnit 6) im Repository,
-damit der Build ohne Netz auskommt und im Workshop nichts nachgeladen werden
-muss. Es steht unter der
-[Eclipse Public License 2.0](https://www.eclipse.org/legal/epl-2.0/) und bringt
-eigene Unterkomponenten mit; die vollständigen Lizenztexte stecken im JAR unter
-`META-INF/`.
+Unter `lib/` liegt zusätzlich `junit-platform-console-standalone` (JUnit 6)
+unverändert im Repository, damit der Build ohne Netz auskommt und im Workshop
+nichts nachgeladen werden muss. Es steht unter der Eclipse Public License 2.0
+und bringt eigene Unterkomponenten mit — Herkunft, Lizenzen und Fundorte der
+vollständigen Texte stehen in
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
