@@ -33,7 +33,7 @@ const ERGEBNIS = {
       testCaseResults: [
         {
           id: 'p1',
-          description: 'Der Code kommt ohne Umlaute und ohne ß aus',
+          description: 'Klassen-, Methoden- und Variablennamen kommen ohne Umlaute und ohne ß aus',
           input: '',
           expectedOutput: '',
           actualOutput: '',
@@ -112,7 +112,7 @@ describe('SubmissionDetailPage', () => {
     // Die Bewertung kommt aus ResultView - derselben Komponente wie beim
     // Teilnehmer. Der Punktestand belegt, dass sie wirklich gerendert wird.
     expect(await screen.findByText('72')).toBeInTheDocument()
-    expect(screen.getByText('Der Code kommt ohne Umlaute und ohne ß aus')).toBeInTheDocument()
+    expect(screen.getByText('Klassen-, Methoden- und Variablennamen kommen ohne Umlaute und ohne ß aus')).toBeInTheDocument()
 
     expect(screen.getByText('Konto.java')).toBeInTheDocument()
     expect(screen.getByText('Kunde.java')).toBeInTheDocument()

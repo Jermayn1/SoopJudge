@@ -48,13 +48,13 @@ namespace SoopWorkshop.Tests.Unit.Infrastructure.Evaluation.Checkers
         [InlineData("Ö")]
         [InlineData("Ü")]
         [InlineData("ß")]
-        public async Task CheckAsync_VerbotenesZeichen_GiltAlsNichtBestanden(string character)
+        public async Task CheckAsync_VerbotenesZeichenImBezeichner_GiltAlsNichtBestanden(string character)
         {
             var files = SubmissionFileFactory.CreateMany(
                 $$"""
                 public class Main {
                     public static void main(String[] args) {
-                        System.out.println("{{character}}");
+                        int wert{{character}} = 0;
                     }
                 }
                 """);
@@ -65,16 +65,57 @@ namespace SoopWorkshop.Tests.Unit.Infrastructure.Evaluation.Checkers
             outcome.ErrorTip.ShouldNotBeNullOrEmpty();
         }
 
-        // Ausdrücklich gewollt: geprüft wird die ROHE Datei. Anders als
-        // ContractChecker und NamingConventionChecker schickt der
-        // CharacterSetChecker den Quelltext NICHT durch StripCommentsAndLiterals -
-        // ein Umlaut im Kommentar kostet denselben Punkt wie einer im Bezeichner.
+        // Der Kern der Regel: verboten ist der Umlaut nur im Namen.
         //
-        // Der Grund: die Regel existiert wegen der Kodierungsfallen der
-        // Java-Konsole, und die treffen gerade Kommentare und Ausgabetexte. Der
-        // Fall im String-Literal steht in der Theory oben.
+        // Randfall des Bereinigens, bewusst ohne Test: ein nicht geschlossenes
+        // Literal verschluckt den Rest der Datei. Das trifft
+        // NamingConventionChecker und ContractChecker genauso, und eine solche
+        // Abgabe kompiliert ohnehin nicht.
         [Fact]
-        public async Task CheckAsync_UmlautNurImKommentar_GiltAlsNichtBestanden()
+        public async Task CheckAsync_UmlautNurInDerAusgabe_GiltAlsBestanden()
+        {
+            var files = SubmissionFileFactory.CreateMany(
+                """
+                public class Main {
+                    public static void main(String[] args) {
+                        System.out.println("Größe in Metern: 5");
+                    }
+                }
+                """);
+
+            var outcome = await CheckAsync(files);
+
+            outcome.Results.ShouldHaveSingleItem().Passed.ShouldBeTrue();
+            outcome.ErrorTip.ShouldBeNull();
+        }
+
+        // Ein Textblock ist ein Literal wie jedes andere. Erkannt wird er nur,
+        // weil StripCommentsAndLiterals die drei Anführungszeichen vor dem
+        // einfachen String prüft.
+        [Fact]
+        public async Task CheckAsync_UmlautNurImTextblock_GiltAlsBestanden()
+        {
+            var files = SubmissionFileFactory.CreateMany(
+                """"
+                public class Main {
+                    public static void main(String[] args) {
+                        System.out.println("""
+                            Größe in Metern
+                            """);
+                    }
+                }
+                """");
+
+            var outcome = await CheckAsync(files);
+
+            outcome.Results.ShouldHaveSingleItem().Passed.ShouldBeTrue();
+        }
+
+        // Ein Kommentar sagt über die Benennung im Programm so wenig aus wie
+        // eine Ausgabe. Der NamingConventionChecker nimmt ihn aus demselben
+        // Grund seit jeher aus.
+        [Fact]
+        public async Task CheckAsync_UmlautNurImKommentar_GiltAlsBestanden()
         {
             var files = SubmissionFileFactory.CreateMany(
                 """
@@ -86,8 +127,39 @@ namespace SoopWorkshop.Tests.Unit.Infrastructure.Evaluation.Checkers
 
             var outcome = await CheckAsync(files);
 
+            outcome.Results.ShouldHaveSingleItem().Passed.ShouldBeTrue();
+        }
+
+        // Gegentest zu den beiden darüber: eine zu weit gefasste Bereinigung
+        // würde den Namen mitnehmen und hier grün melden.
+        [Fact]
+        public async Task CheckAsync_UmlautImBezeichnerNebenAusgabe_GiltAlsNichtBestanden()
+        {
+            var files = SubmissionFileFactory.CreateMany(
+                """
+                public class Main {
+                    public static void main(String[] args) {
+                        int größe = 5;
+                        System.out.println("Größe in Metern: " + größe);
+                    }
+                }
+                """);
+
+            var outcome = await CheckAsync(files);
+
             outcome.Results.ShouldHaveSingleItem().Passed.ShouldBeFalse();
             outcome.ErrorTip.ShouldNotBeNullOrEmpty();
+        }
+
+        // Nicht nur Variablen: Klassen- und Methodennamen zählen genauso.
+        [Fact]
+        public async Task CheckAsync_UmlautImKlassennamen_GiltAlsNichtBestanden()
+        {
+            var files = SubmissionFileFactory.CreateMany("public class Grüße { }");
+
+            var outcome = await CheckAsync(files);
+
+            outcome.Results.ShouldHaveSingleItem().Passed.ShouldBeFalse();
         }
 
         // Ist-Verhalten: geprüft wird nur der Dateiinhalt, nicht der Dateiname.
@@ -109,7 +181,7 @@ namespace SoopWorkshop.Tests.Unit.Infrastructure.Evaluation.Checkers
         {
             var files = SubmissionFileFactory.CreateMany(
                 "public class Main { }",
-                "public class Helper { String text = \"Grüße\"; }");
+                "public class Helper { String grüße = \"Hallo\"; }");
 
             var outcome = await CheckAsync(files);
 

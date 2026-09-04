@@ -60,13 +60,19 @@ neben einem roten Testfall stehen.
 
 Die Gewichte lassen sich pro Aufgabe überschreiben.
 
-**Umlaute kosten Punkte, und das ist Absicht.** Java hat mit `ä`, `ö`, `ü` und
-`ß` kein Problem: in Bezeichnern, Kommentaren und Ausgaben sind sie erlaubt, und
-technisch spricht nichts dagegen. Soop Judge wertet sie trotzdem als
-Clean-Code-Verstoß, weil die Teilnehmer in den Bewertungen ihres Studiums
-ebenfalls Abzug dafür bekommen. Die Regel steht hier also nicht, weil Umlaute
-falsch wären, sondern damit niemand sich eine Gewohnheit aneignet, die ihn
-später Punkte kostet.
+**Umlaute im Namen kosten Punkte, und das ist Absicht.** Java hat mit `ä`, `ö`,
+`ü` und `ß` kein Problem: in Bezeichnern, Kommentaren und Ausgaben sind sie
+erlaubt, und technisch spricht nichts dagegen. Soop Judge wertet sie trotzdem
+als Clean-Code-Verstoß, sobald sie in einem Namen stehen, den der Teilnehmer
+selbst vergibt, weil die Teilnehmer in den Bewertungen ihres Studiums ebenfalls
+Abzug dafür bekommen. Die Regel steht hier also nicht, weil Umlaute falsch
+wären, sondern damit niemand sich eine Gewohnheit aneignet, die ihn später
+Punkte kostet.
+
+Gemeint sind Klassen, Methoden, Parameter, Variablen und Konstanten. In
+Ausgabetexten, Zeichenketten und Kommentaren sind Umlaute erlaubt: eine Aufgabe
+darf ihre Ausgabe wortgetreu vorschreiben, auch wenn dort „Größe" oder „Kühl"
+steht, ohne dass die Musterlösung dafür einen Punkt verliert.
 
 ---
 
