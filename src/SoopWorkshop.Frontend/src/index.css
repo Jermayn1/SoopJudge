@@ -27,6 +27,19 @@
     color-scheme: light;
   }
 
+  /* JetBrains Mono zieht >= zu ≥ und != zu ≠ zusammen. In einer Aufgabenstellung
+      ist es falsch: der Teilnehmer
+     kopiert die Zeile in Eclipse und bekommt einen Compilerfehler an einer
+     Stelle, die fehlerfrei aussieht. Ligaturen sind deshalb überall dort aus,
+     wo Code steht. */
+  code,
+  pre,
+  kbd,
+  samp,
+  textarea {
+    font-variant-ligatures: none;
+  }
+
   body {
     margin: 0;
     min-width: 320px;
@@ -74,6 +87,7 @@
    ══════════════════════════════════════════════════════════════════════ */
 
 @layer components {
+
   .hljs-keyword,
   .hljs-meta {
     @apply text-violet-300;
@@ -126,6 +140,7 @@
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -137,6 +152,7 @@
     opacity: 0;
     transform: translateX(-16px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -147,6 +163,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -157,9 +174,11 @@
     opacity: 0;
     transform: scale(0.6) rotate(-15deg);
   }
+
   70% {
     transform: scale(1.06) rotate(2deg);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) rotate(0);
@@ -167,13 +186,16 @@
 }
 
 @keyframes wackeln {
+
   0%,
   100% {
     transform: rotate(0);
   }
+
   25% {
     transform: rotate(12deg);
   }
+
   75% {
     transform: rotate(-12deg);
   }
@@ -218,6 +240,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
