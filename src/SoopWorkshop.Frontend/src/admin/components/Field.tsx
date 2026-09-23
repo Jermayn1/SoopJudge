@@ -17,12 +17,12 @@ type FieldProps = {
 export function Field({ id, label, hint, error, children }: FieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-semibold text-slate-700">
+      <label htmlFor={id} className="block text-sm font-semibold text-slate-700 dark:text-neutral-300">
         {label}
       </label>
 
       {hint && (
-        <p id={hintId(id)} className="mt-0.5 text-xs text-slate-500">
+        <p id={hintId(id)} className="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">
           {hint}
         </p>
       )}
@@ -30,7 +30,7 @@ export function Field({ id, label, hint, error, children }: FieldProps) {
       <div className="mt-1.5">{children}</div>
 
       {error && (
-        <p id={errorId(id)} role="alert" className="mt-1.5 text-sm font-medium text-rose-800">
+        <p id={errorId(id)} role="alert" className="mt-1.5 text-sm font-medium text-rose-800 dark:text-rose-200">
           {error}
         </p>
       )}

@@ -20,6 +20,7 @@ namespace SoopWorkshop.Backend.Infrastructure.Persistence
         public DbSet<EvaluationResult> EvaluationResults => Set<EvaluationResult>();
         public DbSet<CategoryResult> CategoryResults => Set<CategoryResult>();
         public DbSet<TestCaseResult> TestCaseResults => Set<TestCaseResult>();
+        public DbSet<TestCaseComparison> TestCaseComparisons => Set<TestCaseComparison>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

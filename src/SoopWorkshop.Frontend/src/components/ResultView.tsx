@@ -62,7 +62,7 @@ function ScoreCircle({ score }: { score: number }) {
   return (
     <div className="anim-feder relative inline-block mb-6">
       <div
-        className={`w-36 h-36 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center shadow-2xl ring-8 ring-white`}
+        className={`w-36 h-36 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center shadow-2xl ring-8 ring-white dark:ring-neutral-950`}
       >
         <div className="text-white text-center">
           <div className="text-5xl font-black tabular-nums leading-none">{gezeigt}</div>
@@ -72,7 +72,7 @@ function ScoreCircle({ score }: { score: number }) {
         </div>
       </div>
       {great && (
-        <div className="anim-wackeln absolute -top-3 -right-3 bg-amber-500 w-11 h-11 rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+        <div className="anim-wackeln absolute -top-3 -right-3 bg-amber-500 w-11 h-11 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-neutral-950">
           <Trophy className="w-5 h-5 text-white" aria-hidden="true" />
         </div>
       )}
@@ -112,14 +112,14 @@ export function ResultView({ result }: ResultViewProps) {
       <div className="text-center mb-10">
         <ScoreCircle score={result.totalScore} />
         <h1
-          className="anim-auf text-3xl font-extrabold text-slate-900 mb-2"
+          className="anim-auf text-3xl font-extrabold text-slate-900 mb-2 dark:text-neutral-100"
           style={{ animationDelay: '380ms' }}
         >
           {headline}
         </h1>
-        <p className="anim-ein text-slate-600 text-sm" style={{ animationDelay: '480ms' }}>
+        <p className="anim-ein text-slate-600 text-sm dark:text-neutral-400" style={{ animationDelay: '480ms' }}>
           {open === 0
-            ? 'Alle Teilprüfungen bestanden.'
+            ? 'Alle Teilprüfungen bestanden. Klapp die Kategorien auf, um zu sehen, womit geprüft wurde.'
             : `${passed} bestanden, ${open} offen. Klapp die Kategorien auf, um zu sehen, woran es liegt.`}
         </p>
       </div>

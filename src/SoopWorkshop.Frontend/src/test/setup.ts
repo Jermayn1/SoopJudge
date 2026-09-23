@@ -1,30 +1,22 @@
 import '@testing-library/jest-dom/vitest'
-import { afterEach, vi } from 'vitest'
+import { afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
+import { installMatchMedia, resetMatchMedia } from './matchMedia'
 
-// jsdom kennt matchMedia nicht. ResultView fragt darüber
-// prefers-reduced-motion ab; ohne Stub wirft der erste Render.
-//
-// matches: true ist Absicht und nicht bloß der bequemere Wert: damit setzt
-// useCountUp den Zielwert sofort, statt ihn über requestAnimationFrame
-// hochzuzählen, und der Punktestand steht ohne Warten im DOM. Geprüft wird
-// damit das Ergebnis der Animation, nicht ihr Ablauf.
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: (query: string) => ({
-    matches: true,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  }),
-})
+// ResultView fragt prefers-reduced-motion ab, das Theme prefers-color-scheme.
+// Warum der Ersatz welche Antwort gibt, steht in matchMedia.ts.
+installMatchMedia()
 
 // Ohne das teilen sich aufeinanderfolgende Tests denselben DOM-Baum, und ein
 // getByText fände das Element aus dem vorherigen Test.
+//
+// jsdom behält außerdem localStorage und das <html>-Element über alle Tests
+// einer Datei. Ein Test, der dunkel schaltet, ließe den nächsten sonst im
+// Dunkeln anfangen.
 afterEach(() => {
   cleanup()
+  resetMatchMedia()
+  localStorage.clear()
+  document.documentElement.className = ''
+  document.documentElement.removeAttribute('style')
 })

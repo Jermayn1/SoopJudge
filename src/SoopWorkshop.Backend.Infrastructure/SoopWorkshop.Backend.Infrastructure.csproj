@@ -25,4 +25,11 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
+  <!-- Wird vor jedem JUnit-Lauf neben die Testdateien geschrieben. Als
+       Ressource in der Assembly, damit sie im Container nicht als lose Datei
+       mitwandern muss. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Evaluation\Junit\Werte.java" LogicalName="SoopWorkshop.Werte.java" />
+  </ItemGroup>
+
 </Project>

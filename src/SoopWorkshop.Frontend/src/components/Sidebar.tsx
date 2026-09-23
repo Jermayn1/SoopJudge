@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, RefreshCw } from 'lucide-react'
 import { NavLink, useParams } from 'react-router-dom'
 import { BrandMark } from './BrandMark'
+import { ThemeToggle } from '../theme/ThemeToggle'
 import { iconByName } from '../admin/icons'
 import type { Category } from '../api/types'
 
@@ -43,19 +44,22 @@ export function Sidebar({ categories, loading, error, onRetry }: SidebarProps) {
     })
 
   return (
-    <div className="w-64 shrink-0 bg-slate-50 h-screen border-r border-slate-200 flex flex-col overflow-y-auto">
-      <div className="p-6 border-b border-slate-200 bg-white">
-        <NavLink to="/" className="text-xl font-bold text-slate-800 flex items-center gap-2">
+    // Drei Teile: Kopf und Fußzeile stehen fest, nur die Liste dazwischen
+    // scrollt. Scrollte die ganze Leiste, wanderte der Umschalter unten bei
+    // vielen Kategorien aus dem Bild.
+    <div className="w-64 shrink-0 bg-slate-50 h-screen border-r border-slate-200 flex flex-col dark:bg-neutral-950 dark:border-white/10">
+      <div className="shrink-0 p-6 border-b border-slate-200 bg-white dark:border-white/10 dark:bg-neutral-950">
+        <NavLink to="/" className="text-xl font-bold text-slate-800 flex items-center gap-2 dark:text-neutral-100">
           <BrandMark size={32} />
           Soop Judge
         </NavLink>
       </div>
 
-      <nav className="p-4 space-y-1">
+      <nav className="flex-1 min-h-0 overflow-y-auto p-4 space-y-1">
         {loading && (
           <div className="space-y-2" aria-hidden="true">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-8 rounded-md bg-slate-200 animate-pulse" />
+              <div key={i} className="h-8 rounded-md bg-slate-200 animate-pulse dark:bg-neutral-800" />
             ))}
           </div>
         )}
@@ -64,12 +68,12 @@ export function Sidebar({ categories, loading, error, onRetry }: SidebarProps) {
             und "nicht erreichbar" steht hier im Wortlaut, statt als "keine
             Aufgaben vorhanden" verkleidet zu werden. */}
         {error && !loading && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-3">
-            <p className="text-sm text-rose-800">{error}</p>
+          <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 dark:border-rose-400/30 dark:bg-rose-500/10">
+            <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>
             <button
               type="button"
               onClick={onRetry}
-              className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-800 hover:underline"
+              className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-rose-800 hover:underline dark:text-rose-200"
             >
               <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
               Erneut versuchen
@@ -93,12 +97,12 @@ export function Sidebar({ categories, loading, error, onRetry }: SidebarProps) {
                   onClick={() => toggle(category.id)}
                   aria-expanded={isOpen}
                   aria-controls={regionId}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 mb-1 rounded-md text-xs font-semibold text-slate-500 uppercase tracking-wider transition-colors hover:bg-slate-200 hover:text-slate-700"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 mb-1 rounded-md text-xs font-semibold text-slate-500 uppercase tracking-wider transition-colors hover:bg-slate-200 hover:text-slate-700 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
                 >
                   <Icon className="w-4 h-4" aria-hidden="true" />
                   <span className="flex-1 text-left">{category.name}</span>
                   <span
-                    className={`text-slate-500 transition-transform duration-200 ${
+                    className={`text-slate-500 transition-transform duration-200 dark:text-neutral-400 ${
                       isOpen ? '' : '-rotate-90'
                     }`}
                   >
@@ -124,8 +128,8 @@ export function Sidebar({ categories, loading, error, onRetry }: SidebarProps) {
                         className={({ isActive }) =>
                           `block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all ${
                             isActive
-                              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100'
-                              : 'text-slate-600 hover:bg-slate-200'
+                              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100 dark:bg-indigo-500 dark:shadow-black/30'
+                              : 'text-slate-600 hover:bg-slate-200 dark:text-neutral-300 dark:hover:bg-neutral-800'
                           }`
                         }
                       >
@@ -133,7 +137,7 @@ export function Sidebar({ categories, loading, error, onRetry }: SidebarProps) {
                       </NavLink>
                     ))}
                     {category.tasks.length === 0 && (
-                      <p className="px-3 py-2 text-sm text-slate-500 italic">
+                      <p className="px-3 py-2 text-sm text-slate-500 italic dark:text-neutral-400">
                         Noch keine Aufgaben freigeschaltet.
                       </p>
                     )}
@@ -144,11 +148,15 @@ export function Sidebar({ categories, loading, error, onRetry }: SidebarProps) {
           })}
 
         {!loading && !error && categories.length === 0 && (
-          <p className="px-3 py-4 text-slate-500 text-sm italic">
+          <p className="px-3 py-4 text-slate-500 text-sm italic dark:text-neutral-400">
             Es sind noch keine Aufgaben sichtbar geschaltet.
           </p>
         )}
       </nav>
+
+      <div className="shrink-0 border-t border-slate-200 px-4 py-3 dark:border-white/10">
+        <ThemeToggle variant="switch" />
+      </div>
     </div>
   )
 }

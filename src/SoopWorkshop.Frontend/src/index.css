@@ -12,9 +12,17 @@
    und nicht mehr in einer tailwind.config.js. */
 @plugin '@tailwindcss/typography';
 
+/* Dunkel hängt an der Klasse "dark" auf <html>, nicht an
+   prefers-color-scheme. Mit der Voreinstellung von Tailwind folgte die Seite
+   immer dem Betriebssystem, und der Umschalter hätte nichts zu schalten.
+   Gesetzt wird die Klasse vom Skript im <head> von index.html und danach von
+   src/theme/theme.ts. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Keine eigene Farbpalette. Die Komponenten benutzen Tailwinds Standardfarben
    (slate, indigo, emerald, rose, amber) genau so wie im Referenzprojekt —
-   der Feinschliff an Farben und Abständen passiert von Hand.
+   der Feinschliff an Farben und Abständen passiert von Hand. Im dunklen Modus
+   kommt neutral für die Grautöne dazu, als dark:-Klasse direkt daneben.
 
    Hier steht nur, was das Gerüst braucht. */
 @theme {
@@ -27,8 +35,26 @@
     color-scheme: light;
   }
 
-  /* JetBrains Mono zieht >= zu ≥ und != zu ≠ zusammen. In einer Aufgabenstellung
-      ist es falsch: der Teilnehmer
+  /* Ohne das bleibt alles hell, was der Browser selbst zeichnet:
+     Scrollleisten, die Liste eines <select>, die Pfeile im Zahlenfeld,
+     Autofill und der Hintergrund hinter einem <dialog>. */
+  :root.dark {
+    color-scheme: dark;
+  }
+
+  /* Beim Umschalten würden alle Elemente mit transition-colors überblenden,
+     während der Rest sofort springt. Das sieht nach einem Fehler aus, also
+     sind Übergänge für genau diesen einen Wechsel aus. theme.ts setzt die
+     Klasse und nimmt sie gleich wieder weg. */
+  .theme-wechsel,
+  .theme-wechsel *,
+  .theme-wechsel *::before,
+  .theme-wechsel *::after {
+    transition: none !important;
+  }
+
+  /* JetBrains Mono zieht >= zu ≥ und != zu ≠ zusammen.
+     In einer Aufgabenstellung ist es falsch: der Teilnehmer
      kopiert die Zeile in Eclipse und bekommt einen Compilerfehler an einer
      Stelle, die fehlerfrei aussieht. Ligaturen sind deshalb überall dort aus,
      wo Code steht. */
@@ -48,6 +74,12 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+
+    /* Die Layouts bringen ihren Hintergrund selbst mit. Der hier zählt beim
+       Überscrollen und auf den Seiten ohne Layout (Anmeldung, "Anmeldung
+       nötig"), die Farbe und Schrift von hier erben. Ohne ihn blitzt dort im
+       Dunkeln Weiß durch. */
+    @apply bg-white text-slate-900 dark:bg-neutral-950 dark:text-neutral-100;
   }
 
   #root {
@@ -59,6 +91,13 @@
   :focus-visible {
     outline: 2px solid var(--color-indigo-600);
     outline-offset: 2px;
+  }
+
+  /* indigo-600 kommt auf dunklem Grund nicht auf die 3:1, die ein
+     Fokusrahmen braucht. Über @apply, damit Tailwind die Farbe überhaupt
+     ausgibt, siehe die Syntaxfarben unten. */
+  .dark :focus-visible {
+    @apply outline-indigo-400;
   }
 }
 
@@ -80,10 +119,12 @@
    fände deshalb nichts vor und fiele auf die geerbte Farbe zurück — ohne
    Fehlermeldung, wie jede unbekannte Farbe.
 
-   Kontrast: alles unten liegt auf slate-900, im Browser nachgemessen. Die
-   300er-Töne kommen dort auf 9,6:1 (violet) bis 12,3:1 (amber), slate-400 auf
-   6,8:1. Wer die Werte von Hand nachzieht, sollte unter 4,5:1 nicht rutschen —
-   slate-500 wären nur noch 3,7:1 und fielen damit durch.
+   Kontrast: alles unten liegt auf slate-900, im dunklen Modus auf
+   neutral-900, beides im Browser nachgemessen. Die 300er-Töne kommen dort auf
+   9,6:1 (violet) bis 12,4:1 (amber), slate-400 auf 6,8:1; die beiden Gründe
+   liegen so nah beieinander, dass dieselben Farben für beide taugen. Wer die
+   Werte von Hand nachzieht, sollte unter 4,5:1 nicht rutschen — slate-500
+   wären nur noch 3,7:1 und fielen damit durch.
    ══════════════════════════════════════════════════════════════════════ */
 
 @layer components {

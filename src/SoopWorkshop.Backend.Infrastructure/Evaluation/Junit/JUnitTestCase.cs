@@ -16,5 +16,10 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Junit
         // fehlgeschlagener Unit-Test genauso dargestellt wird wie ein
         // fehlgeschlagener Konsolen-Testfall.
         string Expected,
-        string Actual);
+        string Actual,
+
+        // Was soopjudge.Werte während des Tests mitgeschrieben hat, in der
+        // Reihenfolge der Aufrufe. Leer, wenn die Testdatei ohne Umleitung
+        // lief oder nichts verglichen hat.
+        IReadOnlyList<RecordedComparison> Comparisons);
 }

@@ -15,11 +15,11 @@ export function SaveBar({ state, dirty, onSave, onReset }: SaveBarProps) {
   const saving = state.kind === 'saving'
 
   return (
-    <div className="sticky bottom-0 -mx-8 mt-8 border-t border-slate-200 bg-white/95 px-8 py-4 backdrop-blur">
+    <div className="sticky bottom-0 -mx-8 mt-8 border-t border-slate-200 bg-white/95 px-8 py-4 backdrop-blur dark:border-white/10 dark:bg-neutral-900/95">
       {state.kind === 'error' && (
         <p
           role="alert"
-          className="mb-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800"
+          className="mb-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
         >
           {state.message}
         </p>
@@ -30,7 +30,7 @@ export function SaveBar({ state, dirty, onSave, onReset }: SaveBarProps) {
           type="button"
           onClick={onSave}
           disabled={saving || !dirty}
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none disabled:hover:translate-y-0"
+          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none disabled:hover:translate-y-0 dark:shadow-black/30 dark:disabled:bg-neutral-800"
         >
           {saving ? (
             <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
@@ -44,7 +44,7 @@ export function SaveBar({ state, dirty, onSave, onReset }: SaveBarProps) {
           <button
             type="button"
             onClick={onReset}
-            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
             Änderungen verwerfen
           </button>
@@ -54,13 +54,13 @@ export function SaveBar({ state, dirty, onSave, onReset }: SaveBarProps) {
             einzige Bestätigung, dass der Klick angekommen ist. */}
         <span role="status" aria-live="polite" className="ml-auto text-sm">
           {state.kind === 'saved' && !dirty && (
-            <span className="flex items-center gap-1.5 font-medium text-emerald-900">
+            <span className="flex items-center gap-1.5 font-medium text-emerald-900 dark:text-emerald-200">
               <Check className="w-4 h-4" aria-hidden="true" />
               Gespeichert
             </span>
           )}
           {dirty && state.kind !== 'saving' && (
-            <span className="text-slate-500">Nicht gespeicherte Änderungen</span>
+            <span className="text-slate-500 dark:text-neutral-400">Nicht gespeicherte Änderungen</span>
           )}
         </span>
       </div>

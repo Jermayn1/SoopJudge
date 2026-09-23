@@ -14,6 +14,7 @@ export function teilpruefung(overrides: Partial<TestCaseResult> = {}): TestCaseR
     actualOutput: '',
     passed: true,
     order: 1,
+    comparisons: [],
     ...overrides,
   }
 }

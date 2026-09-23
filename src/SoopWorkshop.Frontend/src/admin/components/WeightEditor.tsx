@@ -32,33 +32,33 @@ export function WeightEditor({ values, onChange }: WeightEditorProps) {
         ))}
       </div>
 
-      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <p className="text-sm font-semibold text-slate-700">Daraus ergeben sich diese Punkte</p>
-        <p className="mt-0.5 text-xs text-slate-500">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-neutral-950/60">
+        <p className="text-sm font-semibold text-slate-700 dark:text-neutral-300">Daraus ergeben sich diese Punkte</p>
+        <p className="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">
           Gewichte sind kein Punktwert. Die erreichbaren Punkte entstehen erst durch die
           Normierung auf 100 — und nur über die Kategorien, die diese Aufgabe wirklich prüft.
         </p>
 
         {invalid ? (
-          <p className="mt-3 text-sm text-slate-500">
+          <p className="mt-3 text-sm text-slate-500 dark:text-neutral-400">
             Erst wenn alle Gewichte größer als 0 sind.
           </p>
         ) : (
           <dl className="mt-3 space-y-2 text-sm">
             <div className="flex flex-wrap gap-x-4 gap-y-1">
-              <dt className="w-full text-slate-600 sm:w-56">Mit allen drei Kategorien</dt>
+              <dt className="w-full text-slate-600 sm:w-56 dark:text-neutral-400">Mit allen drei Kategorien</dt>
               {WEIGHTED_CATEGORIES.map((entry, index) => (
-                <dd key={entry.category} className="tabular-nums text-slate-800">
-                  <span className="text-slate-500">{entry.label}</span> {withAll[index]}
+                <dd key={entry.category} className="tabular-nums text-slate-800 dark:text-neutral-100">
+                  <span className="text-slate-500 dark:text-neutral-400">{entry.label}</span> {withAll[index]}
                 </dd>
               ))}
             </div>
 
             <div className="flex flex-wrap gap-x-4 gap-y-1">
-              <dt className="w-full text-slate-600 sm:w-56">Ohne Prüfung der Funktionalität</dt>
+              <dt className="w-full text-slate-600 sm:w-56 dark:text-neutral-400">Ohne Prüfung der Funktionalität</dt>
               {WEIGHTED_CATEGORIES.slice(0, 2).map((entry, index) => (
-                <dd key={entry.category} className="tabular-nums text-slate-800">
-                  <span className="text-slate-500">{entry.label}</span>{' '}
+                <dd key={entry.category} className="tabular-nums text-slate-800 dark:text-neutral-100">
+                  <span className="text-slate-500 dark:text-neutral-400">{entry.label}</span>{' '}
                   {withoutFunctionality[index]}
                 </dd>
               ))}

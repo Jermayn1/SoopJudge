@@ -43,8 +43,8 @@ export function StringListEditor({
 
   return (
     <div>
-      <p className="text-sm font-semibold text-slate-700">{label}</p>
-      {hint && <p className="mt-0.5 text-xs text-slate-500">{hint}</p>}
+      <p className="text-sm font-semibold text-slate-700 dark:text-neutral-300">{label}</p>
+      {hint && <p className="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{hint}</p>}
 
       <ul className="mt-2 space-y-2">
         {values.map((value, index) => (
@@ -70,7 +70,7 @@ export function StringListEditor({
               type="button"
               onClick={() => remove(index)}
               aria-label={`${itemNoun} ${index + 1} entfernen`}
-              className="mt-1 shrink-0 rounded-lg p-2 text-rose-800 hover:bg-rose-50"
+              className="mt-1 shrink-0 rounded-lg p-2 text-rose-800 hover:bg-rose-50 dark:text-rose-200 dark:hover:bg-rose-500/10"
             >
               <Trash2 className="w-4 h-4" aria-hidden="true" />
             </button>
@@ -81,7 +81,7 @@ export function StringListEditor({
       <button
         type="button"
         onClick={() => onChange([...values, ''])}
-        className="mt-2 flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+        className="mt-2 flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
       >
         <Plus className="w-4 h-4" aria-hidden="true" />
         {addLabel}

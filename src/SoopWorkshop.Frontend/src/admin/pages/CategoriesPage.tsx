@@ -116,25 +116,25 @@ export function CategoriesPage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-3xl">
-        <h1 className="text-2xl font-bold text-slate-800">Kategorien</h1>
-        <p className="mt-1 text-slate-600">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">Kategorien</h1>
+        <p className="mt-1 text-slate-600 dark:text-neutral-400">
           Die Reihenfolge bestimmt, wie die Kategorien beim Teilnehmer erscheinen.
         </p>
 
         {problem && (
           <div
             role="alert"
-            className="mt-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800"
+            className="mt-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
           >
             {problem}
           </div>
         )}
 
         {/* Anlegen */}
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <label htmlFor="neue-kategorie" className="block text-sm font-semibold text-slate-700">
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900">
+          <label htmlFor="neue-kategorie" className="block text-sm font-semibold text-slate-700 dark:text-neutral-300">
             Neue Kategorie
           </label>
           <div className="mt-1.5 flex gap-3">
@@ -154,13 +154,13 @@ export function CategoriesPage() {
               type="button"
               onClick={add}
               disabled={busy || newName.trim().length === 0}
-              className="flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none dark:shadow-black/30 dark:disabled:bg-neutral-800"
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
               Anlegen
             </button>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-slate-500 dark:text-neutral-400">
             Neue Kategorien sind zunächst verborgen und werden hier freigeschaltet.
           </p>
         </div>
@@ -168,7 +168,7 @@ export function CategoriesPage() {
         {loading && (
           <div className="mt-6 space-y-3" aria-hidden="true">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-16 rounded-2xl bg-slate-200 animate-pulse" />
+              <div key={i} className="h-16 rounded-2xl bg-slate-200 animate-pulse dark:bg-neutral-800" />
             ))}
           </div>
         )}
@@ -176,13 +176,13 @@ export function CategoriesPage() {
         {error && !loading && (
           <div
             role="alert"
-            className="mt-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800"
+            className="mt-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
           >
             <p>{error}</p>
             <button
               type="button"
               onClick={reload}
-              className="mt-3 flex items-center gap-1.5 text-sm font-semibold text-rose-800 hover:underline"
+              className="mt-3 flex items-center gap-1.5 text-sm font-semibold text-rose-800 hover:underline dark:text-rose-200"
             >
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
               Erneut versuchen
@@ -195,7 +195,7 @@ export function CategoriesPage() {
             {categories.map((category, index) => (
               <li
                 key={category.id}
-                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900"
               >
                 <OrderButtons
                   label={`Kategorie ${category.name}`}
@@ -225,7 +225,7 @@ export function CategoriesPage() {
                       onClick={() => saveName(category)}
                       disabled={busy}
                       aria-label="Namen übernehmen"
-                      className="rounded-lg p-2 text-emerald-900 hover:bg-emerald-50"
+                      className="rounded-lg p-2 text-emerald-900 hover:bg-emerald-50 dark:text-emerald-200 dark:hover:bg-emerald-500/10"
                     >
                       <Check className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -233,7 +233,7 @@ export function CategoriesPage() {
                       type="button"
                       onClick={() => setEditingId(null)}
                       aria-label="Abbrechen"
-                      className="rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+                      className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
                     >
                       <X className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -251,17 +251,17 @@ export function CategoriesPage() {
                           onClick={() => setPendingIcon(category)}
                           disabled={busy}
                           aria-label={`Symbol für ${category.name} wählen`}
-                          className="shrink-0 rounded-lg border border-slate-200 p-2 text-slate-600 transition-colors hover:border-slate-400 hover:bg-slate-50"
+                          className="shrink-0 rounded-lg border border-slate-200 p-2 text-slate-600 transition-colors hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:text-neutral-400 dark:hover:border-white/25 dark:hover:bg-white/5"
                         >
                           <Icon className="w-4 h-4" aria-hidden="true" />
                         </button>
                       )
                     })()}
 
-                    <span className="min-w-0 flex-1 truncate font-semibold text-slate-800">
+                    <span className="min-w-0 flex-1 truncate font-semibold text-slate-800 dark:text-neutral-100">
                       {category.name}
                     </span>
-                    <span className="shrink-0 text-sm tabular-nums text-slate-500">
+                    <span className="shrink-0 text-sm tabular-nums text-slate-500 dark:text-neutral-400">
                       {category.tasks.length === 1
                         ? '1 Aufgabe'
                         : `${category.tasks.length} Aufgaben`}
@@ -273,8 +273,8 @@ export function CategoriesPage() {
                       disabled={busy}
                       className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold transition-colors ${
                         category.isVisible
-                          ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                          : 'bg-amber-50 text-amber-900 ring-1 ring-amber-200 hover:bg-amber-100'
+                          ? 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700'
+                          : 'bg-amber-50 text-amber-900 ring-1 ring-amber-200 hover:bg-amber-100 dark:bg-amber-500/10 dark:text-amber-200 dark:ring-amber-400/30 dark:hover:bg-amber-500/15'
                       }`}
                     >
                       {category.isVisible ? (
@@ -293,7 +293,7 @@ export function CategoriesPage() {
                       }}
                       disabled={busy}
                       aria-label={`${category.name} umbenennen`}
-                      className="rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+                      className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
                     >
                       <Pencil className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -303,7 +303,7 @@ export function CategoriesPage() {
                       onClick={() => setPendingDelete(category)}
                       disabled={busy}
                       aria-label={`${category.name} löschen`}
-                      className="rounded-lg p-2 text-rose-800 hover:bg-rose-50"
+                      className="rounded-lg p-2 text-rose-800 hover:bg-rose-50 dark:text-rose-200 dark:hover:bg-rose-500/10"
                     >
                       <Trash2 className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -313,7 +313,7 @@ export function CategoriesPage() {
             ))}
 
             {categories.length === 0 && (
-              <li className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600">
+              <li className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600 dark:border-white/15 dark:bg-neutral-900 dark:text-neutral-400">
                 Noch keine Kategorie angelegt.
               </li>
             )}

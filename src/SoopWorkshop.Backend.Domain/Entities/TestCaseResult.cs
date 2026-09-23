@@ -19,6 +19,10 @@
         // Datenbank, in welcher Reihenfolge die Teilprüfungen zurückkommen.
         public int Order { get; set; }
 
+        // Was der Testlauf verglichen hat, auch bei bestandener Prüfung. Bisher
+        // nur bei JUnit gefüllt: dort kennt das Ergebnis sonst keine Werte.
+        public ICollection<TestCaseComparison> Comparisons { get; set; } = [];
+
         public CategoryResult CategoryResult { get; set; } = null!;
     }
 }

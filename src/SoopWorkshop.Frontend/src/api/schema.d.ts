@@ -2048,6 +2048,12 @@ export interface components {
             order?: number | string;
             isVisibleToParticipant?: boolean;
         };
+        TestCaseComparisonDto: {
+            call?: string;
+            expected?: string;
+            actual?: string;
+            passed?: boolean;
+        };
         TestCaseResultDto: {
             /** Format: uuid */
             id?: string;
@@ -2058,6 +2064,7 @@ export interface components {
             passed?: boolean;
             /** Format: int32 */
             order?: number | string;
+            comparisons?: components["schemas"]["TestCaseComparisonDto"][];
         };
         UpdateTaskCategoryDto: {
             /** Format: uuid */

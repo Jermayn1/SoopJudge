@@ -22,12 +22,12 @@ export function describedBy(id: string, hasHint: boolean, hasError: boolean): st
 
 export function inputClass(hasError: boolean): string {
   const base =
-    'w-full rounded-xl border bg-white px-3 py-2 text-slate-900 transition-colors placeholder:text-slate-400 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500'
+    'w-full rounded-xl border bg-white px-3 py-2 text-slate-900 transition-colors placeholder:text-slate-400 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:bg-neutral-950 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:disabled:bg-neutral-800/60 dark:disabled:text-neutral-400'
 
   // Der Fehler wird nicht nur über die Farbe angezeigt — darunter steht der
   // Satz, und das Feld trägt aria-invalid. Farbe allein wäre für jemanden
   // mit Rotschwäche keine Information.
   return hasError
-    ? `${base} border-rose-300 hover:border-rose-400 focus:border-rose-500`
-    : `${base} border-slate-300 hover:border-slate-400 focus:border-indigo-500`
+    ? `${base} border-rose-300 hover:border-rose-400 focus:border-rose-500 dark:border-rose-400/60`
+    : `${base} border-slate-300 hover:border-slate-400 focus:border-indigo-500 dark:border-white/15 dark:hover:border-white/25`
 }

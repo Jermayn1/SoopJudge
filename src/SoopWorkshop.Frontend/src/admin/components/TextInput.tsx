@@ -42,7 +42,7 @@ export function TextInput({
         className={inputClass(error !== undefined)}
       />
       {maxLength !== undefined && (
-        <p className="mt-1 text-right text-xs tabular-nums text-slate-500">
+        <p className="mt-1 text-right text-xs tabular-nums text-slate-500 dark:text-neutral-400">
           {value.length} / {maxLength}
         </p>
       )}

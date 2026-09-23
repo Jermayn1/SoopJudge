@@ -7,14 +7,14 @@ import { fetchSubmissionState } from '../api/endpoints'
 
 function Waiting({ title, text }: { title: string; text: string }) {
   return (
-    <div className="flex-1 flex items-center justify-center bg-slate-50 p-8">
+    <div className="flex-1 flex items-center justify-center bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="anim-auf max-w-md text-center" role="status" aria-live="polite">
         <Loader2
-          className="w-10 h-10 text-indigo-600 animate-spin mx-auto mb-5"
+          className="w-10 h-10 text-indigo-600 animate-spin mx-auto mb-5 dark:text-indigo-300"
           aria-hidden="true"
         />
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">{title}</h2>
-        <p className="text-slate-600">{text}</p>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2 dark:text-neutral-100">{title}</h2>
+        <p className="text-slate-600 dark:text-neutral-400">{text}</p>
       </div>
     </div>
   )
@@ -44,7 +44,7 @@ export function ResultPage() {
   const backLink = (
     <Link
       to={taskId ? `/aufgaben/${taskId}` : '/'}
-      className="flex items-center gap-2 text-slate-600 text-sm font-semibold hover:text-indigo-700 transition-colors mb-8 group w-fit"
+      className="flex items-center gap-2 text-slate-600 text-sm font-semibold hover:text-indigo-700 transition-colors mb-8 group w-fit dark:text-neutral-400 dark:hover:text-indigo-200"
     >
       <ArrowLeft
         className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"
@@ -76,18 +76,18 @@ export function ResultPage() {
 
   if (phase.kind === 'failed') {
     return (
-      <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+      <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
         <div className="max-w-3xl mx-auto">
           {backLink}
-          <div className="anim-auf rounded-2xl border border-rose-200 bg-white overflow-hidden shadow-sm">
-            <div className="flex items-center gap-2 px-5 py-4 border-b border-rose-100 bg-rose-50">
-              <AlertTriangle className="w-5 h-5 text-rose-700" aria-hidden="true" />
-              <h2 className="font-bold text-slate-800">Die Auswertung ist nicht durchgelaufen</h2>
+          <div className="anim-auf rounded-2xl border border-rose-200 bg-white overflow-hidden shadow-sm dark:border-rose-400/30 dark:bg-neutral-900">
+            <div className="flex items-center gap-2 px-5 py-4 border-b border-rose-100 bg-rose-50 dark:border-rose-400/20 dark:bg-rose-500/10">
+              <AlertTriangle className="w-5 h-5 text-rose-700 dark:text-rose-200" aria-hidden="true" />
+              <h2 className="font-bold text-slate-800 dark:text-neutral-100">Die Auswertung ist nicht durchgelaufen</h2>
             </div>
             <div className="p-5 space-y-4">
               {/* Der Grund des Servers im Wortlaut — kein stiller Fehlschlag. */}
-              <p className="whitespace-pre-wrap break-words text-slate-700">{phase.message}</p>
-              <div className="flex items-center gap-2 text-sm text-slate-600">
+              <p className="whitespace-pre-wrap break-words text-slate-700 dark:text-neutral-300">{phase.message}</p>
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-neutral-400">
                 <Clock className="w-4 h-4" aria-hidden="true" />
                 Du kannst die Aufgabe erneut abgeben.
               </div>
@@ -99,7 +99,7 @@ export function ResultPage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50">
+    <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-neutral-950">
       <div className="max-w-3xl mx-auto px-6 py-10 pb-24">
         {backLink}
         <ResultView result={phase.result} />

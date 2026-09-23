@@ -123,6 +123,27 @@ describe('Sortierung', () => {
     ])
   })
 
+  // Alte Ergebnisse haben noch keine Vergleiche. Dann soll eine leere Liste
+  // kommen und nicht undefined, sonst stürzt die Anzeige beim Aufklappen ab.
+  it('uebernimmt die Vergleiche einer Teilpruefung und fuellt fehlende auf', () => {
+    const ergebnis = toEvaluationResult({
+      categoryResults: [
+        {
+          id: 'c',
+          category: 'Functionality',
+          testCaseResults: [
+            { id: 'a', order: 1, comparisons: [{ call: 'k.f()', expected: '1', actual: '1', passed: true }] },
+            { id: 'b', order: 2 },
+          ],
+        },
+      ],
+    })
+
+    const [mitVergleich, alt] = ergebnis.categoryResults[0].testCaseResults
+    expect(mitVergleich.comparisons).toEqual([{ call: 'k.f()', expected: '1', actual: '1', passed: true }])
+    expect(alt.comparisons).toEqual([])
+  })
+
   // **Ist-Verhalten, bewusst so**: die Kategorien selbst werden hier NICHT
   // sortiert. Ihre Reihenfolge ist keine Zahl aus der Datenbank, sondern die
   // feste Anzeigereihenfolge aus EvaluationCategoryOrder - die kennt ResultView

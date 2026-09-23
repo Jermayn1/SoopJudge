@@ -90,7 +90,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
       {hinweis && (
         <p
           role="alert"
-          className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"
+          className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200"
         >
           {hinweis}
         </p>
@@ -103,7 +103,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
           const regionId = `junit-datei-${index}`
 
           return (
-            <li key={index} className="rounded-xl border border-slate-200 bg-slate-50">
+            <li key={index} className="rounded-xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-neutral-950/60">
               <div className="flex flex-wrap items-center gap-2 p-4">
                 <OrderButtons
                   label={`Datei ${index + 1}`}
@@ -113,7 +113,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
                   canMoveDown={index < files.length - 1}
                 />
 
-                <FileCode2 className="w-4 h-4 shrink-0 text-slate-500" aria-hidden="true" />
+                <FileCode2 className="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" aria-hidden="true" />
 
                 <input
                   type="text"
@@ -130,7 +130,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
                   onClick={() => umschalten(index)}
                   aria-expanded={istOffen}
                   aria-controls={regionId}
-                  className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200"
+                  className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200 dark:text-neutral-400 dark:hover:bg-neutral-800"
                 >
                   <span
                     className={`transition-transform duration-200 ${istOffen ? '' : '-rotate-90'}`}
@@ -144,14 +144,14 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
                   type="button"
                   onClick={() => remove(index)}
                   aria-label={`${file.fileName || `Datei ${index + 1}`} entfernen`}
-                  className="shrink-0 rounded-lg p-2 text-rose-800 hover:bg-rose-100"
+                  className="shrink-0 rounded-lg p-2 text-rose-800 hover:bg-rose-100 dark:text-rose-200 dark:hover:bg-rose-500/15"
                 >
                   <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
 
               {problem && (
-                <p role="alert" className="px-4 pb-3 text-sm font-medium text-rose-800">
+                <p role="alert" className="px-4 pb-3 text-sm font-medium text-rose-800 dark:text-rose-200">
                   {problem.message}
                 </p>
               )}
@@ -180,7 +180,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
       </ul>
 
       {files.length === 0 && (
-        <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+        <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-white/15 dark:text-neutral-400">
           Noch keine JUnit-Datei hinterlegt.
         </p>
       )}
@@ -191,7 +191,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
           onClick={() =>
             ergaenzen({ fileName: '', content: '', isVisibleToParticipant: false })
           }
-          className="flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+          className="flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
         >
           <FilePlus2 className="w-4 h-4" aria-hidden="true" />
           Leere Datei
@@ -200,7 +200,7 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
         <button
           type="button"
           onClick={() => dateiRef.current?.click()}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+          className="flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
         >
           <Upload className="w-4 h-4" aria-hidden="true" />
           .java hochladen
@@ -227,14 +227,14 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
             type="button"
             onClick={() => setVorlagenOffen((offen) => !offen)}
             aria-expanded={vorlagenOffen}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
             <ChevronDown className="w-4 h-4" aria-hidden="true" />
             Aus Vorlage
           </button>
 
           {vorlagenOffen && (
-            <div className="absolute left-0 top-full z-10 mt-1 w-80 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+            <div className="absolute left-0 top-full z-10 mt-1 w-80 rounded-xl border border-slate-200 bg-white p-2 shadow-lg dark:border-white/10 dark:bg-neutral-800 dark:shadow-black/40">
               {JUNIT_TEMPLATES.map((template) => (
                 <button
                   key={template.id}
@@ -247,12 +247,12 @@ export function UnitTestFileEditor({ files, onChange }: UnitTestFileEditorProps)
                     })
                     setVorlagenOffen(false)
                   }}
-                  className="block w-full rounded-lg px-3 py-2 text-left transition-colors hover:bg-slate-100"
+                  className="block w-full rounded-lg px-3 py-2 text-left transition-colors hover:bg-slate-100 dark:hover:bg-neutral-700"
                 >
-                  <span className="block text-sm font-semibold text-slate-800">
+                  <span className="block text-sm font-semibold text-slate-800 dark:text-neutral-100">
                     {template.titel}
                   </span>
-                  <span className="block text-xs text-slate-500">{template.wofuer}</span>
+                  <span className="block text-xs text-slate-500 dark:text-neutral-300">{template.wofuer}</span>
                 </button>
               ))}
             </div>

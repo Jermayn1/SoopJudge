@@ -82,7 +82,7 @@ describe('ResultView', () => {
       />,
     )
 
-    expect(screen.getByText('Alle Teilprüfungen bestanden.')).toBeInTheDocument()
+    expect(screen.getByText('Alle Teilprüfungen bestanden. Klapp die Kategorien auf, um zu sehen, womit geprüft wurde.')).toBeInTheDocument()
   })
 
   it('zaehlt bestandene und offene Teilpruefungen ueber alle Kategorien', () => {

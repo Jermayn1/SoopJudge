@@ -91,15 +91,15 @@ export function NewTaskPage() {
 
   if (categories.length === 0) {
     return (
-      <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
-        <div className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-          <p className="font-medium text-slate-700">Es gibt noch keine Kategorie.</p>
-          <p className="mt-1 text-sm text-slate-500">
+      <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
+        <div className="mx-auto w-full max-w-2xl rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-white/15 dark:bg-neutral-900">
+          <p className="font-medium text-slate-700 dark:text-neutral-300">Es gibt noch keine Kategorie.</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-neutral-400">
             Eine Aufgabe gehört immer in eine Kategorie — die muss es zuerst geben.
           </p>
           <Link
             to="/admin/kategorien"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 dark:shadow-black/30"
           >
             Zu den Kategorien
           </Link>
@@ -109,25 +109,25 @@ export function NewTaskPage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-2xl">
         <Link
           to="/admin"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-100"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Übersicht
         </Link>
 
-        <h1 className="mt-3 text-2xl font-bold text-slate-800">Neue Aufgabe</h1>
-        <p className="mt-1 text-slate-600">
+        <h1 className="mt-3 text-2xl font-bold text-slate-800 dark:text-neutral-100">Neue Aufgabe</h1>
+        <p className="mt-1 text-slate-600 dark:text-neutral-400">
           Sie wird verborgen angelegt. Testfälle und Vertrag kommen im nächsten Schritt dazu.
         </p>
 
         {problems.length > 0 && (
           <ul
             role="alert"
-            className="mt-4 space-y-1 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800"
+            className="mt-4 space-y-1 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
           >
             {problems.map((problem) => (
               <li key={problem}>{problem}</li>
@@ -135,7 +135,7 @@ export function NewTaskPage() {
           </ul>
         )}
 
-        <div className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-900">
           <TextInput
             label="Titel"
             value={title}
@@ -176,7 +176,7 @@ export function NewTaskPage() {
             type="button"
             onClick={submit}
             disabled={busy}
-            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
+            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none dark:shadow-black/30 dark:disabled:bg-neutral-800"
           >
             <Plus className="w-4 h-4" aria-hidden="true" />
             {busy ? 'Wird angelegt …' : 'Anlegen und bearbeiten'}

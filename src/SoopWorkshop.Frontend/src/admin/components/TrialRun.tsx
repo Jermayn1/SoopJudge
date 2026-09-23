@@ -22,7 +22,7 @@ export function TrialRun({ taskItemId }: TrialRunProps) {
   if (submissionId === null) {
     return (
       <div>
-        <p className="mb-4 flex gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+        <p className="mb-4 flex gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200">
           <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" />
           Ein Probelauf erzeugt eine echte Abgabe in der Datenbank. Sie zählt damit auch bei der
           Warnung mit, die ein Import im Modus „Ersetzen“ anzeigt.
@@ -41,7 +41,7 @@ export function TrialRun({ taskItemId }: TrialRunProps) {
     <button
       type="button"
       onClick={() => setSubmissionId(null)}
-      className="flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+      className="flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
     >
       <RotateCcw className="w-4 h-4" aria-hidden="true" />
       Noch ein Probelauf
@@ -52,9 +52,9 @@ export function TrialRun({ taskItemId }: TrialRunProps) {
   // anderes als "wird geprüft".
   if (phase.kind === 'idle' || phase.kind === 'pending' || phase.kind === 'running') {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-6" role="status" aria-live="polite">
-        <Loader2 className="w-5 h-5 shrink-0 animate-spin text-indigo-600" aria-hidden="true" />
-        <p className="text-sm text-slate-700">
+      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-6 dark:border-white/10 dark:bg-neutral-950/60" role="status" aria-live="polite">
+        <Loader2 className="w-5 h-5 shrink-0 animate-spin text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
+        <p className="text-sm text-slate-700 dark:text-neutral-300">
           {phase.kind === 'running'
             ? 'Wird gerade geprüft — kompilieren, Testfälle, Unit-Tests.'
             : 'In der Warteschlange.'}
@@ -66,10 +66,10 @@ export function TrialRun({ taskItemId }: TrialRunProps) {
   if (phase.kind === 'failed') {
     return (
       <div>
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4" role="alert">
-          <p className="font-semibold text-rose-800">Die Auswertung ist nicht durchgelaufen</p>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 dark:border-rose-400/30 dark:bg-rose-500/10" role="alert">
+          <p className="font-semibold text-rose-800 dark:text-rose-200">Die Auswertung ist nicht durchgelaufen</p>
           {/* Der Grund des Servers im Wortlaut — kein stiller Fehlschlag. */}
-          <p className="mt-2 whitespace-pre-wrap break-words text-sm text-rose-800">{phase.message}</p>
+          <p className="mt-2 whitespace-pre-wrap break-words text-sm text-rose-800 dark:text-rose-200">{phase.message}</p>
         </div>
         <div className="mt-4">{nochmal}</div>
       </div>
@@ -78,7 +78,7 @@ export function TrialRun({ taskItemId }: TrialRunProps) {
 
   return (
     <div>
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-white/10 dark:bg-neutral-950/60">
         <ResultView result={phase.result} />
       </div>
       <div className="mt-4">{nochmal}</div>

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { BrandMark } from './BrandMark'
+import { ThemeToggle } from '../theme/ThemeToggle'
 import { fetchCategories } from '../api/endpoints'
 import type { Category } from '../api/types'
 
@@ -59,7 +60,7 @@ export function AppLayout() {
   }, [menuOpen])
 
   return (
-    <div className="flex w-full h-screen bg-white font-sans text-slate-900">
+    <div className="flex w-full h-screen bg-white font-sans text-slate-900 dark:bg-neutral-950 dark:text-neutral-100">
       {/* Ab lg steht die Leiste fest. Darunter — schmales Fenster, geteilter
           Bildschirm, kleines Notebook — wird sie zur Überlagerung. */}
       <div className="hidden lg:flex">
@@ -72,7 +73,7 @@ export function AppLayout() {
             type="button"
             aria-label="Menü schließen"
             onClick={() => setMenuOpen(false)}
-            className="fixed inset-0 z-40 bg-slate-900/40 lg:hidden"
+            className="fixed inset-0 z-40 bg-slate-900/40 lg:hidden dark:bg-black/60"
           />
           <div className="fixed inset-y-0 left-0 z-50 shadow-2xl lg:hidden">
             <button
@@ -80,7 +81,7 @@ export function AppLayout() {
               type="button"
               onClick={() => setMenuOpen(false)}
               aria-label="Menü schließen"
-              className="absolute right-2 top-2 z-10 rounded-lg p-2 text-slate-600 hover:bg-slate-200"
+              className="absolute right-2 top-2 z-10 rounded-lg p-2 text-slate-600 hover:bg-slate-200 dark:text-neutral-300 dark:hover:bg-neutral-800"
             >
               <X className="w-5 h-5" aria-hidden="true" />
             </button>
@@ -90,21 +91,29 @@ export function AppLayout() {
       )}
 
       <div className="flex flex-1 flex-col min-w-0">
-        {/* Kopfzeile nur unterhalb von lg — auf dem Laptop ist die Leiste ja da. */}
-        <header className="flex items-center gap-3 border-b border-slate-200 px-4 py-3 lg:hidden">
+        {/* Kopfzeile nur unterhalb von lg — auf dem Laptop ist die Leiste ja da.
+            Solange das Menü offen ist, ist sie genauso gesperrt wie der
+            Inhalt, sonst tabbt man hinter der Überlagerung zum Umschalter. */}
+        <header
+          className="flex items-center gap-3 border-b border-slate-200 px-4 py-3 lg:hidden dark:border-white/10"
+          inert={menuOpen}
+        >
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Aufgabenliste öffnen"
             aria-expanded={menuOpen}
-            className="rounded-lg p-2 text-slate-700 hover:bg-slate-100"
+            className="rounded-lg p-2 text-slate-700 hover:bg-slate-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
             <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
-          <span className="flex items-center gap-2 font-bold text-slate-800">
+          <span className="flex items-center gap-2 font-bold text-slate-800 dark:text-neutral-100">
             <BrandMark size={24} />
             Soop Judge
           </span>
+          <div className="ml-auto">
+            <ThemeToggle variant="icon" />
+          </div>
         </header>
 
         {/* Solange die Überlagerung offen ist, ist der Inhalt dahinter weder

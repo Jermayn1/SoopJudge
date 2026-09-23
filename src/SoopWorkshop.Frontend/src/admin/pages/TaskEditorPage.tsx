@@ -65,9 +65,9 @@ type LoadState =
 
 function Card({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-bold text-slate-800">{title}</h2>
-      {hint && <p className="mt-0.5 text-sm text-slate-600">{hint}</p>}
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-900">
+      <h2 className="text-lg font-bold text-slate-800 dark:text-neutral-100">{title}</h2>
+      {hint && <p className="mt-0.5 text-sm text-slate-600 dark:text-neutral-400">{hint}</p>}
       <div className="mt-4">{children}</div>
     </section>
   )
@@ -354,11 +354,11 @@ export function TaskEditorPage() {
 
   if (state.kind === 'loading') {
     return (
-      <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+      <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
         <div className="mx-auto w-full max-w-3xl space-y-4" aria-hidden="true">
-          <div className="h-10 w-2/3 rounded-xl bg-slate-200 animate-pulse" />
-          <div className="h-64 rounded-2xl bg-slate-200 animate-pulse" />
-          <div className="h-40 rounded-2xl bg-slate-200 animate-pulse" />
+          <div className="h-10 w-2/3 rounded-xl bg-slate-200 animate-pulse dark:bg-neutral-800" />
+          <div className="h-64 rounded-2xl bg-slate-200 animate-pulse dark:bg-neutral-800" />
+          <div className="h-40 rounded-2xl bg-slate-200 animate-pulse dark:bg-neutral-800" />
         </div>
       </div>
     )
@@ -367,20 +367,20 @@ export function TaskEditorPage() {
   if (state.kind !== 'ok' || !draft) {
     const unreachable = state.kind === 'unreachable'
     return (
-      <div className="flex flex-1 items-center justify-center bg-slate-50 p-8">
-        <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <div className="mx-auto mb-4 flex w-16 h-16 items-center justify-center rounded-3xl bg-slate-100">
-            <AlertCircle className="w-8 h-8 text-slate-500" aria-hidden="true" />
+      <div className="flex flex-1 items-center justify-center bg-slate-50 p-8 dark:bg-neutral-950">
+        <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-white/10 dark:bg-neutral-900">
+          <div className="mx-auto mb-4 flex w-16 h-16 items-center justify-center rounded-3xl bg-slate-100 dark:bg-neutral-800">
+            <AlertCircle className="w-8 h-8 text-slate-500 dark:text-neutral-400" aria-hidden="true" />
           </div>
-          <h2 className="mb-2 text-2xl font-bold text-slate-800">
+          <h2 className="mb-2 text-2xl font-bold text-slate-800 dark:text-neutral-100">
             {unreachable ? 'Der Server antwortet nicht' : 'Diese Aufgabe gibt es nicht'}
           </h2>
-          <p className="text-slate-600">{state.kind === 'ok' ? '' : state.message}</p>
+          <p className="text-slate-600 dark:text-neutral-400">{state.kind === 'ok' ? '' : state.message}</p>
           {unreachable && (
             <button
               type="button"
               onClick={() => setAttempt((n) => n + 1)}
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 dark:shadow-black/30"
             >
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
               Erneut versuchen
@@ -388,7 +388,7 @@ export function TaskEditorPage() {
           )}
           <Link
             to="/admin"
-            className="mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold text-slate-700 hover:underline"
+            className="mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold text-slate-700 hover:underline dark:text-neutral-300"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Zurück zur Übersicht
@@ -401,21 +401,21 @@ export function TaskEditorPage() {
   const blocker = missingTestData()
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-3xl">
         <Link
           to="/admin"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-100"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Übersicht
         </Link>
 
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-800">{draft.title || 'Aufgabe'}</h1>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">{draft.title || 'Aufgabe'}</h1>
           <Link
             to={`/admin/aufgaben/${taskId}/vorschau`}
-            className="ml-auto flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+            className="ml-auto flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
             <Eye className="w-4 h-4" aria-hidden="true" />
             Teilnehmer-Vorschau
@@ -425,7 +425,7 @@ export function TaskEditorPage() {
         {problems.length > 0 && (
           <ul
             role="alert"
-            className="mt-4 space-y-1 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800"
+            className="mt-4 space-y-1 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
           >
             {problems.map((problem) => (
               <li key={problem}>{problem}</li>
@@ -484,8 +484,8 @@ export function TaskEditorPage() {
               />
 
               {draft.description.trim().length > 0 && (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-neutral-950/60">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">
                     Vorschau
                   </p>
                   <TaskMarkdown>{draft.description}</TaskMarkdown>
@@ -538,7 +538,7 @@ export function TaskEditorPage() {
             hint="Eigene Lösung hochladen und die Bewertung sehen — ohne die Aufgabe freizuschalten. So fällt eine kaputte JUnit-Datei hier auf und nicht erst im Workshop."
           >
             {dirty ? (
-              <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+              <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-white/10 dark:bg-neutral-950/60 dark:text-neutral-400">
                 Erst speichern — ein Probelauf wird gegen den gespeicherten Stand ausgewertet,
                 nicht gegen das, was hier gerade im Formular steht.
               </p>
@@ -550,7 +550,7 @@ export function TaskEditorPage() {
           <Card title="Sichtbarkeit">
             <div className="space-y-3">
               {blocker && !isVisible && (
-                <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200">
                   {blocker}
                 </p>
               )}
@@ -558,7 +558,7 @@ export function TaskEditorPage() {
               {visibilityProblem && (
                 <p
                   role="alert"
-                  className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800"
+                  className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
                 >
                   {visibilityProblem}
                 </p>
@@ -569,7 +569,7 @@ export function TaskEditorPage() {
                   type="button"
                   onClick={onToggleVisibility}
                   disabled={dirty}
-                  className="flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
                 >
                   {isVisible ? (
                     <EyeOff className="w-4 h-4" aria-hidden="true" />
@@ -579,14 +579,14 @@ export function TaskEditorPage() {
                   {isVisible ? 'Für Teilnehmer verbergen' : 'Für Teilnehmer freischalten'}
                 </button>
 
-                <span className="text-sm text-slate-600">
+                <span className="text-sm text-slate-600 dark:text-neutral-400">
                   Zurzeit {isVisible ? 'sichtbar' : 'verborgen'}.
                 </span>
 
                 <button
                   type="button"
                   onClick={() => setPendingDelete(true)}
-                  className="ml-auto flex items-center gap-2 rounded-xl border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-800 transition-colors hover:bg-rose-50"
+                  className="ml-auto flex items-center gap-2 rounded-xl border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-800 transition-colors hover:bg-rose-50 dark:border-rose-400/30 dark:text-rose-200 dark:hover:bg-rose-500/10"
                 >
                   <Trash2 className="w-4 h-4" aria-hidden="true" />
                   Aufgabe löschen
@@ -594,7 +594,7 @@ export function TaskEditorPage() {
               </div>
 
               {dirty && (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-neutral-400">
                   Erst speichern — die Sichtbarkeit wird gegen den gespeicherten Stand geprüft.
                 </p>
               )}

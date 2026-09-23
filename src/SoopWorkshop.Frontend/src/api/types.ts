@@ -101,6 +101,15 @@ export type Category = {
   tasks: Task[]
 }
 
+/** Ein einzelner Vergleich einer JUnit-Prüfung, etwa ein assertEquals. */
+export type TestCaseComparison = {
+  /** Der geprüfte Ausdruck, etwa "Ggt.ggt(9, 28)". Leer, wenn es keinen gibt. */
+  call: string
+  expected: string
+  actual: string
+  passed: boolean
+}
+
 export type TestCaseResult = {
   id: string
   description: string
@@ -110,6 +119,8 @@ export type TestCaseResult = {
   actualOutput: string
   passed: boolean
   order: number
+  /** In der Reihenfolge der Aufrufe. Leer bei Konsolen-Testfällen und bei alten Ergebnissen. */
+  comparisons: TestCaseComparison[]
 }
 
 export type CategoryResult = {

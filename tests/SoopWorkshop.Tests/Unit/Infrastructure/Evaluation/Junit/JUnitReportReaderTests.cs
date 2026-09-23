@@ -178,5 +178,60 @@ namespace SoopWorkshop.Tests.Unit.Infrastructure.Evaluation.Junit
         {
             JUnitReportReader.Read(Path.Combine(_directory, "gibtesnicht")).ShouldBeEmpty();
         }
+
+        // So legt der Launcher die Ausgabe auf System.err ab, wenn
+        // junit.platform.output.capture.stderr gesetzt ist. Die Zeile der
+        // Abgabe dazwischen gehört nicht zu den Vergleichen.
+        private const string MitVergleichen = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <testsuite name="JUnit Jupiter" tests="1">
+              <testcase name="bezahlen()" classname="KasseTest" time="0.01">
+                <system-out><![CDATA[
+            display-name: JUnit Jupiter > KasseTest > bezahlen liefert das Wechselgeld
+            ]]></system-out>
+                <system-err><![CDATA[
+            Die Abgabe schreibt auch etwas
+            [soop-vergleich] assertEquals 1 KasseTest 12 Ny41 Ny41
+            [soop-vergleich] assertTrue 1 KasseTest$Rechnung 14 dHJ1ZQ== dHJ1ZQ==
+            ]]></system-err>
+              </testcase>
+            </testsuite>
+            """;
+
+        [Fact]
+        public void Read_VergleicheInSystemErr_LiestSieInDerReihenfolgeDesLaufs()
+        {
+            WriteReport("TEST-junit-jupiter.xml", MitVergleichen);
+
+            var comparisons = JUnitReportReader.Read(_directory).ShouldHaveSingleItem().Comparisons;
+
+            comparisons.Count.ShouldBe(2);
+            comparisons[0].ShouldBe(new RecordedComparison("assertEquals", true, "KasseTest", 12, "7.5", "7.5"));
+            comparisons[1].ClassName.ShouldBe("KasseTest$Rechnung");
+            comparisons[1].Actual.ShouldBe("true");
+        }
+
+        // Seit System.err im Report steht, landet dort auch, was die Abgabe
+        // schreibt - samt Zeichen, die XML nicht erlaubt. Der Launcher schreibt
+        // sie roh. Verwürfe der Leser deshalb den Report, fiele die ganze
+        // Kategorie durch, obwohl alle Tests bestanden haben.
+        [Fact]
+        public void Read_SteuerzeichenInSystemErr_LiestDenReportTrotzdem()
+        {
+            WriteReport("TEST-junit-jupiter.xml", MitVergleichen.Replace("Die Abgabe schreibt", "Die Abgabe\u0001\u0007 schreibt"));
+
+            var testCase = JUnitReportReader.Read(_directory).ShouldHaveSingleItem();
+
+            testCase.Passed.ShouldBeTrue();
+            testCase.Comparisons.Count.ShouldBe(2);
+        }
+
+        [Fact]
+        public void Read_OhneSystemErr_LiefertKeineVergleiche()
+        {
+            WriteReport("TEST-junit-jupiter.xml", BestandenUndDurchgefallen);
+
+            JUnitReportReader.Read(_directory).ShouldAllBe(testCase => testCase.Comparisons.Count == 0);
+        }
     }
 }

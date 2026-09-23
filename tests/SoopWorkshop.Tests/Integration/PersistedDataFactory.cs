@@ -160,7 +160,19 @@ namespace SoopWorkshop.Tests.Integration
                                 ExpectedOutput = "Stand: 100",
                                 ActualOutput = "Stand: 0",
                                 Passed = false,
-                                Order = 1
+                                Order = 1,
+                                Comparisons =
+                                [
+                                    new TestCaseComparison
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        Call = "konto.getStand()",
+                                        Expected = "100",
+                                        Actual = "0",
+                                        Passed = false,
+                                        Order = 0
+                                    }
+                                ]
                             }
                         ]
                     }

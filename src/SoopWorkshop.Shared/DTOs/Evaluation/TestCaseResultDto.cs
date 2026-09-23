@@ -15,5 +15,9 @@
         // Anzeigereihenfolge innerhalb der Kategorie. Das Frontend sortiert
         // danach, statt sich auf die Reihenfolge der Datenbank zu verlassen.
         public int Order { get; set; }
+
+        // Die einzelnen Vergleiche einer JUnit-Prüfung, bereits sortiert. Leer
+        // bei Konsolen-Testfällen und bei Ergebnissen von vor der Einführung.
+        public List<TestCaseComparisonDto> Comparisons { get; set; } = [];
     }
 }

@@ -48,14 +48,14 @@ export function TaskPreviewPage() {
   const leiste = (
     // Deutlich gekennzeichnet: wer beim Hin- und Herspringen vergisst, wo er
     // ist, hält sonst die Vorschau für die echte Teilnehmersicht.
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-3 border-b border-amber-200 bg-amber-50 px-8 py-3">
-      <Eye className="w-4 h-4 shrink-0 text-amber-900" aria-hidden="true" />
-      <span className="text-sm font-semibold text-amber-900">
+    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-3 border-b border-amber-200 bg-amber-50 px-8 py-3 dark:border-amber-400/30 dark:bg-amber-950">
+      <Eye className="w-4 h-4 shrink-0 text-amber-900 dark:text-amber-200" aria-hidden="true" />
+      <span className="text-sm font-semibold text-amber-900 dark:text-amber-200">
         Vorschau — so sieht ein Teilnehmer die Aufgabe
       </span>
       <Link
         to={`/admin/aufgaben/${taskId}`}
-        className="ml-auto flex items-center gap-1.5 rounded-lg border border-amber-300 px-3 py-1.5 text-sm font-semibold text-amber-900 transition-colors hover:bg-amber-100"
+        className="ml-auto flex items-center gap-1.5 rounded-lg border border-amber-300 px-3 py-1.5 text-sm font-semibold text-amber-900 transition-colors hover:bg-amber-100 dark:border-amber-400/40 dark:text-amber-200 dark:hover:bg-amber-500/15"
       >
         <PencilLine className="w-4 h-4" aria-hidden="true" />
         Zurück zum Bearbeiten
@@ -65,12 +65,12 @@ export function TaskPreviewPage() {
 
   if (state.kind === 'loading') {
     return (
-      <div className="flex-1 overflow-y-auto bg-white">
+      <div className="flex-1 overflow-y-auto bg-white dark:bg-neutral-950">
         {leiste}
         <div className="mx-auto w-full max-w-4xl space-y-6 p-8" aria-hidden="true">
-          <div className="h-6 w-40 rounded-full bg-slate-200 animate-pulse" />
-          <div className="h-10 w-2/3 rounded bg-slate-200 animate-pulse" />
-          <div className="h-40 rounded-2xl bg-slate-100 animate-pulse" />
+          <div className="h-6 w-40 rounded-full bg-slate-200 animate-pulse dark:bg-neutral-800" />
+          <div className="h-10 w-2/3 rounded bg-slate-200 animate-pulse dark:bg-neutral-800" />
+          <div className="h-40 rounded-2xl bg-slate-100 animate-pulse dark:bg-neutral-800" />
         </div>
       </div>
     )
@@ -79,22 +79,22 @@ export function TaskPreviewPage() {
   if (state.kind !== 'ok') {
     const unreachable = state.kind === 'unreachable'
     return (
-      <div className="flex-1 overflow-y-auto bg-white">
+      <div className="flex-1 overflow-y-auto bg-white dark:bg-neutral-950">
         {leiste}
         <div className="flex items-center justify-center p-8">
           <div className="max-w-md text-center">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
-              <AlertCircle className="w-8 h-8 text-slate-500" aria-hidden="true" />
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-neutral-800">
+              <AlertCircle className="w-8 h-8 text-slate-500 dark:text-neutral-400" aria-hidden="true" />
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-slate-800">
+            <h2 className="mb-2 text-2xl font-bold text-slate-800 dark:text-neutral-100">
               {unreachable ? 'Der Server antwortet nicht' : 'Diese Aufgabe gibt es nicht'}
             </h2>
-            <p className="text-slate-600">{state.message}</p>
+            <p className="text-slate-600 dark:text-neutral-400">{state.message}</p>
             {unreachable && (
               <button
                 type="button"
                 onClick={() => setAttempt((n) => n + 1)}
-                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700"
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 dark:shadow-black/30"
               >
                 <RefreshCw className="w-4 h-4" aria-hidden="true" />
                 Erneut versuchen
@@ -107,7 +107,7 @@ export function TaskPreviewPage() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-white">
+    <div className="flex-1 overflow-y-auto bg-white dark:bg-neutral-950">
       {leiste}
       <div className="mx-auto w-full max-w-4xl p-8 pb-20">
         <TaskView task={state.task} />
@@ -115,7 +115,7 @@ export function TaskPreviewPage() {
         {/* Der Abgabeteil fehlt bewusst: hochgeladen wird im Probelauf, direkt
             im Editor. Zwei Wege zum selben Ziel würden nur die Frage
             aufwerfen, welcher der richtige ist. */}
-        <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+        <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-white/10 dark:bg-neutral-950/60 dark:text-neutral-400">
           Hier stünde für den Teilnehmer der Bereich zum Hochladen. Ausprobieren lässt sich die
           Bewertung im Editor unter <strong>Probelauf</strong>.
         </p>

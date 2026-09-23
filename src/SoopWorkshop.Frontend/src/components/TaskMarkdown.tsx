@@ -35,12 +35,19 @@ import remarkGfm from 'remark-gfm'
 //     eine Zeile war damit 2,86-mal so hoch wie breit - ASCII-Kunst wird so
 //     um rund 40% überdehnt. 1,375 liegt zwischen Terminal (~1,2) und
 //     Editor (~1,5): die Pyramide behält ihre Form, Java-Code bleibt luftig.
+//
+//   dark:prose-invert dark:prose-neutral
+//     prose-invert allein behält die Grautöne von prose-slate, und die sind
+//     auf dem fast neutralen Dunkelgrau spürbar bläulich. prose-neutral
+//     gleicht das an. Codeblöcke setzt invert auf halbtransparentes Schwarz;
+//     neutral-950 liegt eine Stufe unter der Karte, wie die übrigen
+//     Code-Fenster.
 const KLASSEN = [
-  'prose prose-slate max-w-none',
-  'prose-p:text-slate-700 prose-p:leading-relaxed',
-  'prose-pre:leading-snug',
+  'prose prose-slate max-w-none dark:prose-invert dark:prose-neutral',
+  'prose-p:text-slate-700 prose-p:leading-relaxed dark:prose-p:text-neutral-300',
+  'prose-pre:leading-snug dark:prose-pre:bg-neutral-950',
   '[&_:not(pre)>code]:before:content-none [&_:not(pre)>code]:after:content-none',
-  '[&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-slate-100',
+  '[&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-slate-100 dark:[&_:not(pre)>code]:bg-neutral-700',
   '[&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:font-normal',
 ].join(' ')
 
@@ -49,26 +56,26 @@ const KLASSEN = [
 // Tabelle außerhalb von prose (not-prose) und bringt ihre Klassen selbst mit.
 const KOMPONENTEN = {
   table: ({ children, ...rest }: ComponentProps<'table'>) => (
-    <div className="not-prose my-6 overflow-x-auto rounded-lg border border-slate-200">
+    <div className="not-prose my-6 overflow-x-auto rounded-lg border border-slate-200 dark:border-white/10">
       <table {...rest} className="w-full border-collapse text-left text-sm">
         {children}
       </table>
     </div>
   ),
   thead: ({ children, ...rest }: ComponentProps<'thead'>) => (
-    <thead {...rest} className="bg-slate-50 text-slate-900">
+    <thead {...rest} className="bg-slate-50 text-slate-900 dark:bg-neutral-950/60 dark:text-neutral-100">
       {children}
     </thead>
   ),
   th: ({ children, ...rest }: ComponentProps<'th'>) => (
-    <th {...rest} className="border-b border-slate-200 px-3 py-2 font-semibold">
+    <th {...rest} className="border-b border-slate-200 px-3 py-2 font-semibold dark:border-white/10">
       {children}
     </th>
   ),
   td: ({ children, ...rest }: ComponentProps<'td'>) => (
     <td
       {...rest}
-      className="border-b border-slate-100 px-3 py-2 align-top text-slate-700"
+      className="border-b border-slate-100 px-3 py-2 align-top text-slate-700 dark:border-white/5 dark:text-neutral-300"
     >
       {children}
     </td>

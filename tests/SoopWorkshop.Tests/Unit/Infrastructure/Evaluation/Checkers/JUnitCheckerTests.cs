@@ -364,5 +364,173 @@ namespace SoopWorkshop.Tests.Unit.Infrastructure.Evaluation.Checkers
 
             File.Exists(Path.Combine(_workingDirectory, "MainTest.java")).ShouldBeTrue();
         }
+
+        private const string KasseTest = """
+            import static org.junit.jupiter.api.Assertions.*;
+
+            class KasseTest {
+                void bezahlen() {
+                    assertEquals(7.5, kasse.bezahlen(20), 0.0001);
+                }
+            }
+            """;
+
+        private static string ReportMitVergleich(string systemErr, bool passed = true) => $"""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <testsuite name="JUnit Jupiter" tests="1">
+              <testcase name="bezahlen()" classname="KasseTest" time="0.01">
+                {(passed ? "" : "<failure message=\"expected: &lt;7.5&gt; but was: &lt;8.0&gt;\" />")}
+                <system-out><![CDATA[
+            display-name: JUnit Jupiter > KasseTest > bezahlen liefert das Wechselgeld
+            ]]></system-out>
+                <system-err><![CDATA[
+            {systemErr}
+            ]]></system-err>
+              </testcase>
+            </testsuite>
+            """;
+
+        // Bestandene JUnit-Prüfungen hätten sonst keine Werte: JUnit nennt
+        // Erwartet und Erhalten nur beim Scheitern.
+        [Fact]
+        public async Task CheckAsync_UebersetztMitUmleitungUndHilfsklasse()
+        {
+            JavacReturns(ProcessResultFactory.Success());
+            JavaWritesReport(Report(("egal", true)));
+
+            await CreateChecker().CheckAsync(
+                Context(EvaluationMode.UnitTestOnly, true, TestFile("KasseTest.java", KasseTest)),
+                CancellationToken.None);
+
+            var helper = Path.Combine("soopjudge", "Werte.java");
+            File.ReadAllText(Path.Combine(_workingDirectory, helper)).ShouldContain("public final class Werte");
+            File.ReadAllText(Path.Combine(_workingDirectory, "KasseTest.java"))
+                .ShouldContain("soopjudge.Werte.assertEquals(7.5, kasse.bezahlen(20), 0.0001);");
+
+            await _processRunner.Received(1).RunAsync(
+                Arg.Is<ProcessRequest>(r => r.FileName == "javac" && r.Arguments.Contains(helper)),
+                Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task CheckAsync_StartetDenLauncherMitMitschnittVonSystemErr()
+        {
+            JavacReturns(ProcessResultFactory.Success());
+            JavaWritesReport(Report(("egal", true)));
+
+            await CreateChecker().CheckAsync(Context(), CancellationToken.None);
+
+            await _processRunner.Received(1).RunAsync(
+                Arg.Is<ProcessRequest>(r => r.FileName == "java"
+                                            && r.Arguments.Contains("--config=junit.platform.output.capture.stderr=true")),
+                Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task CheckAsync_OrdnetDenVergleichSeinemAufrufZu()
+        {
+            JavacReturns(ProcessResultFactory.Success());
+            JavaWritesReport(ReportMitVergleich("[soop-vergleich] assertEquals 1 KasseTest 5 Ny41 Ny41"));
+
+            var outcome = await CreateChecker().CheckAsync(
+                Context(EvaluationMode.UnitTestOnly, true, TestFile("KasseTest.java", KasseTest)),
+                CancellationToken.None);
+
+            var comparison = outcome.Results.ShouldHaveSingleItem().Comparisons.ShouldHaveSingleItem();
+            comparison.Call.ShouldBe("kasse.bezahlen(20)");
+            comparison.Expected.ShouldBe("7.5");
+            comparison.Actual.ShouldBe("7.5");
+            comparison.Passed.ShouldBeTrue();
+        }
+
+        // Werte meldet eine Zeile, zu der die Testdatei keinen Aufruf kennt -
+        // etwa weil die Abgabe selbst eine solche Zeile schreibt. Der Wert
+        // bleibt, nur ohne Ausdruck.
+        [Fact]
+        public async Task CheckAsync_UnbekannteZeile_BehaeltDenWertOhneAusdruck()
+        {
+            JavacReturns(ProcessResultFactory.Success());
+            JavaWritesReport(ReportMitVergleich("[soop-vergleich] assertEquals 1 KasseTest 99 Ny41 Ny41"));
+
+            var outcome = await CreateChecker().CheckAsync(
+                Context(EvaluationMode.UnitTestOnly, true, TestFile("KasseTest.java", KasseTest)),
+                CancellationToken.None);
+
+            outcome.Results.ShouldHaveSingleItem().Comparisons.ShouldHaveSingleItem().Call.ShouldBe(string.Empty);
+        }
+
+        [Fact]
+        public async Task CheckAsync_VieleVergleiche_SpeichertHoechstensFuenfzig()
+        {
+            var lines = string.Join("\n", Enumerable.Repeat("[soop-vergleich] assertEquals 1 KasseTest 5 Ny41 Ny41", 80));
+            JavacReturns(ProcessResultFactory.Success());
+            JavaWritesReport(ReportMitVergleich(lines));
+
+            var outcome = await CreateChecker().CheckAsync(
+                Context(EvaluationMode.UnitTestOnly, true, TestFile("KasseTest.java", KasseTest)),
+                CancellationToken.None);
+
+            var comparisons = outcome.Results.ShouldHaveSingleItem().Comparisons.ToList();
+            comparisons.Count.ShouldBe(50);
+            comparisons.Select(c => c.Order).ShouldBe(Enumerable.Range(0, 50));
+        }
+
+        // Passt die Hilfsklasse einmal nicht zu einer Testdatei, darf das keine
+        // Note kosten. Dann läuft der Test wie früher, nur ohne Werte.
+        [Fact]
+        public async Task CheckAsync_UmleitungUebersetztNicht_LaeuftOhneUmleitung()
+        {
+            _processRunner.RunAsync(Arg.Is<ProcessRequest>(r => r.FileName == "javac"), Arg.Any<CancellationToken>())
+                .Returns(
+                    Task.FromResult(ProcessResultFactory.Failure("soopjudge/Werte.java:1: error")),
+                    Task.FromResult(ProcessResultFactory.Success()));
+            JavaWritesReport(Report(("egal", true)));
+
+            var outcome = await CreateChecker().CheckAsync(
+                Context(EvaluationMode.UnitTestOnly, true, TestFile("KasseTest.java", KasseTest)),
+                CancellationToken.None);
+
+            outcome.Results.ShouldHaveSingleItem().Passed.ShouldBeTrue();
+            File.ReadAllText(Path.Combine(_workingDirectory, "KasseTest.java")).ShouldBe(KasseTest);
+            await _processRunner.Received(1).RunAsync(
+                Arg.Is<ProcessRequest>(r => r.FileName == "javac" && !r.Arguments.Contains(Path.Combine("soopjudge", "Werte.java"))),
+                Arg.Any<CancellationToken>());
+        }
+
+        // Scheitert es auch ohne Umleitung, liegt es an der Abgabe. Der
+        // Teilnehmer soll die Meldung zu seiner Testdatei sehen, nicht eine zu
+        // soopjudge.Werte.
+        [Fact]
+        public async Task CheckAsync_UebersetztAuchOhneUmleitungNicht_MeldetDenZweitenVersuch()
+        {
+            _processRunner.RunAsync(Arg.Is<ProcessRequest>(r => r.FileName == "javac"), Arg.Any<CancellationToken>())
+                .Returns(
+                    Task.FromResult(ProcessResultFactory.Failure("umgeleitet: soopjudge.Werte")),
+                    Task.FromResult(ProcessResultFactory.Failure("KasseTest.java:5: error: cannot find symbol")));
+
+            var outcome = await CreateChecker().CheckAsync(
+                Context(EvaluationMode.UnitTestOnly, true, TestFile("KasseTest.java", KasseTest)),
+                CancellationToken.None);
+
+            var result = outcome.Results.ShouldHaveSingleItem();
+            result.Passed.ShouldBeFalse();
+            result.ActualOutput.ShouldContain("KasseTest.java:5");
+            result.ActualOutput.ShouldNotContain("soopjudge");
+            await _processRunner.DidNotReceive().RunAsync(
+                Arg.Is<ProcessRequest>(r => r.FileName == "java"), Arg.Any<CancellationToken>());
+        }
+
+        // Eine Zeitüberschreitung wiederholt sich ohne Umleitung genauso. Ein
+        // zweiter Versuch verdoppelte nur die Wartezeit.
+        [Fact]
+        public async Task CheckAsync_ZeitueberschreitungBeimUebersetzen_VersuchtEsNichtZweimal()
+        {
+            JavacReturns(ProcessResultFactory.TimedOut());
+
+            await CreateChecker().CheckAsync(Context(), CancellationToken.None);
+
+            await _processRunner.Received(1).RunAsync(
+                Arg.Is<ProcessRequest>(r => r.FileName == "javac"), Arg.Any<CancellationToken>());
+        }
     }
 }

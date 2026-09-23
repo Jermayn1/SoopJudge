@@ -357,6 +357,40 @@ namespace SoopWorkshop.Backend.Infrastructure.Migrations
                     b.ToTable("TaskUnitTestFiles");
                 });
 
+            modelBuilder.Entity("SoopWorkshop.Backend.Domain.Entities.TestCaseComparison", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actual")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Call")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Expected")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Passed")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("TestCaseResultId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TestCaseResultId");
+
+                    b.ToTable("TestCaseComparisons");
+                });
+
             modelBuilder.Entity("SoopWorkshop.Backend.Domain.Entities.TestCaseResult", b =>
                 {
                     b.Property<Guid>("Id")
@@ -517,6 +551,17 @@ namespace SoopWorkshop.Backend.Infrastructure.Migrations
                     b.Navigation("Task");
                 });
 
+            modelBuilder.Entity("SoopWorkshop.Backend.Domain.Entities.TestCaseComparison", b =>
+                {
+                    b.HasOne("SoopWorkshop.Backend.Domain.Entities.TestCaseResult", "TestCaseResult")
+                        .WithMany("Comparisons")
+                        .HasForeignKey("TestCaseResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TestCaseResult");
+                });
+
             modelBuilder.Entity("SoopWorkshop.Backend.Domain.Entities.TestCaseResult", b =>
                 {
                     b.HasOne("SoopWorkshop.Backend.Domain.Entities.CategoryResult", "CategoryResult")
@@ -568,6 +613,11 @@ namespace SoopWorkshop.Backend.Infrastructure.Migrations
                     b.Navigation("Tests");
 
                     b.Navigation("UnitTestFiles");
+                });
+
+            modelBuilder.Entity("SoopWorkshop.Backend.Domain.Entities.TestCaseResult", b =>
+                {
+                    b.Navigation("Comparisons");
                 });
 #pragma warning restore 612, 618
         }

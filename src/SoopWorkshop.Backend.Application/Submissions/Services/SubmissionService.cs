@@ -222,7 +222,16 @@ public class SubmissionService(
                         ExpectedOutput = t.ExpectedOutput,
                         ActualOutput = t.ActualOutput,
                         Passed = t.Passed,
-                        Order = t.Order
+                        Order = t.Order,
+                        Comparisons = t.Comparisons
+                            .OrderBy(c => c.Order)
+                            .Select(c => new TestCaseComparisonDto
+                            {
+                                Call = c.Call,
+                                Expected = c.Expected,
+                                Actual = c.Actual,
+                                Passed = c.Passed
+                            }).ToList()
                     }).ToList()
             }).ToList()
     };

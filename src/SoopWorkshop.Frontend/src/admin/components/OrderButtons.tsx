@@ -16,7 +16,7 @@ type OrderButtonsProps = {
 // Knöpfe sind es dagegen von selbst.
 export function OrderButtons({ label, onUp, onDown, canMoveUp, canMoveDown }: OrderButtonsProps) {
   const buttonClass =
-    'rounded-md p-1 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent'
+    'rounded-md p-1 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-800 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 dark:disabled:text-neutral-600'
 
   return (
     <div className="flex shrink-0 flex-col">

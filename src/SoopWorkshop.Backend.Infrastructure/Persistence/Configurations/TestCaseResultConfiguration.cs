@@ -26,6 +26,11 @@ namespace SoopWorkshop.Backend.Infrastructure.Persistence.Configurations
             // Sortierschlüssel der Anzeige - ohne Index, es sind wenige Zeilen
             // je Kategorie und sie werden ohnehin immer zusammen geladen.
             builder.Property(t => t.Order);
+
+            builder.HasMany(t => t.Comparisons)
+                .WithOne(c => c.TestCaseResult)
+                .HasForeignKey(c => c.TestCaseResultId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -23,10 +23,10 @@ const STATUS_TEXT: Record<SubmissionStatus, string> = {
 // getöntem Grund mit Kante. Grün oder Rot direkt auf Weiß bleibt unter den
 // 4,5:1 Kontrast, die lesbarer Fließtext braucht.
 const STATUS_STIL: Record<SubmissionStatus, string> = {
-  Pending: 'bg-slate-50 text-slate-700 border-slate-200',
-  Running: 'bg-amber-50 text-amber-900 border-amber-200',
-  Done: 'bg-emerald-50 text-emerald-900 border-emerald-200',
-  Failed: 'bg-rose-50 text-rose-900 border-rose-200',
+  Pending: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-neutral-800 dark:text-neutral-300 dark:border-white/10',
+  Running: 'bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-500/10 dark:text-amber-200 dark:border-amber-400/30',
+  Done: 'bg-emerald-50 text-emerald-900 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-200 dark:border-emerald-400/30',
+  Failed: 'bg-rose-50 text-rose-900 border-rose-200 dark:bg-rose-500/10 dark:text-rose-200 dark:border-rose-400/30',
 }
 
 function Statusmarke({ status }: { status: SubmissionStatus }) {
@@ -43,13 +43,13 @@ function Punkte({ eintrag }: { eintrag: SubmissionListItem }) {
   // Null ist nicht 0. Ein Strich sagt "noch nicht bewertet", eine 0 würde
   // behaupten, die Lösung habe nichts erreicht.
   if (eintrag.totalScore === null) {
-    return <span className="text-slate-400">—</span>
+    return <span className="text-slate-500 dark:text-neutral-400">—</span>
   }
 
   return (
-    <span className="font-medium tabular-nums text-slate-800">
+    <span className="font-medium tabular-nums text-slate-800 dark:text-neutral-100">
       {eintrag.totalScore}
-      <span className="text-slate-400"> / {eintrag.maxScore ?? 100}</span>
+      <span className="text-slate-500 dark:text-neutral-400"> / {eintrag.maxScore ?? 100}</span>
     </span>
   )
 }
@@ -117,12 +117,12 @@ export function SubmissionsPage() {
   // Rahmen wird deshalb unterhalb der Fensterkante schlicht abgeschnitten,
   // und die Zeilen dort sind mit keiner Geste erreichbar.
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-4xl space-y-6">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Abgaben</h1>
-            <p className="text-sm text-slate-500">
+            <h1 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">Abgaben</h1>
+            <p className="text-sm text-slate-500 dark:text-neutral-400">
               Was die Teilnehmer eingereicht haben, neueste zuerst.
             </p>
           </div>
@@ -130,7 +130,7 @@ export function SubmissionsPage() {
           <button
             type="button"
             onClick={() => void laden()}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-white/5"
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />
             Neu laden
@@ -139,7 +139,7 @@ export function SubmissionsPage() {
 
         <div className="flex flex-wrap gap-3">
           <label className="text-sm">
-            <span className="mb-1 block font-medium text-slate-600">Status</span>
+            <span className="mb-1 block font-medium text-slate-600 dark:text-neutral-400">Status</span>
             <select
               value={status}
               onChange={(event) => {
@@ -148,7 +148,7 @@ export function SubmissionsPage() {
                 // Treffern eine leere Seite 3 und sieht nach "nichts da" aus.
                 setSkip(0)
               }}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-white/15 dark:bg-neutral-950"
             >
               <option value="">Alle</option>
               {(Object.keys(STATUS_TEXT) as SubmissionStatus[]).map((wert) => (
@@ -160,14 +160,14 @@ export function SubmissionsPage() {
           </label>
 
           <label className="text-sm">
-            <span className="mb-1 block font-medium text-slate-600">Aufgabe</span>
+            <span className="mb-1 block font-medium text-slate-600 dark:text-neutral-400">Aufgabe</span>
             <select
               value={aufgabe}
               onChange={(event) => {
                 setAufgabe(event.target.value)
                 setSkip(0)
               }}
-              className="max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2"
+              className="max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-white/15 dark:bg-neutral-950"
             >
               <option value="">Alle</option>
               {alleAufgaben.map((eintrag) => (
@@ -180,7 +180,7 @@ export function SubmissionsPage() {
         </div>
 
         {fehler && (
-          <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-900">
+          <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-900 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
             <div>
               <p className="font-medium">Die Abgaben konnten nicht geladen werden.</p>
@@ -190,14 +190,14 @@ export function SubmissionsPage() {
         )}
 
         {laedt && (
-          <div className="flex items-center gap-2 text-slate-500">
+          <div className="flex items-center gap-2 text-slate-500 dark:text-neutral-400">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             Wird geladen …
           </div>
         )}
 
         {!laedt && !fehler && seite?.items.length === 0 && (
-          <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-slate-500">
+          <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-slate-500 dark:border-white/10 dark:bg-neutral-900 dark:text-neutral-400">
             {status === '' && aufgabe === ''
               ? 'Es wurde noch nichts abgegeben.'
               : 'Zu diesem Filter gibt es keine Abgaben.'}
@@ -206,9 +206,9 @@ export function SubmissionsPage() {
 
         {!laedt && !fehler && seite && seite.items.length > 0 && (
           <>
-            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-white/10 dark:bg-neutral-900">
               <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:border-white/10 dark:bg-neutral-950/60 dark:text-neutral-400">
                   <tr>
                     <th className="px-4 py-3">Abgegeben</th>
                     <th className="px-4 py-3">Aufgabe</th>
@@ -219,18 +219,18 @@ export function SubmissionsPage() {
                 </thead>
                 <tbody>
                   {seite.items.map((eintrag) => (
-                    <tr key={eintrag.id} className="border-b border-slate-100 last:border-0">
-                      <td className="whitespace-nowrap px-4 py-3 tabular-nums text-slate-600">
+                    <tr key={eintrag.id} className="border-b border-slate-100 last:border-0 dark:border-white/5">
+                      <td className="whitespace-nowrap px-4 py-3 tabular-nums text-slate-600 dark:text-neutral-400">
                         {formatDateTime(eintrag.submittedAt)}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-slate-800">{eintrag.taskTitle}</div>
-                        <div className="text-xs text-slate-500">{eintrag.categoryName}</div>
+                        <div className="font-medium text-slate-800 dark:text-neutral-100">{eintrag.taskTitle}</div>
+                        <div className="text-xs text-slate-500 dark:text-neutral-400">{eintrag.categoryName}</div>
                       </td>
                       <td className="px-4 py-3">
                         <Statusmarke status={eintrag.status} />
                         {eintrag.status === 'Failed' && eintrag.errorMessage && (
-                          <p className="mt-1 max-w-md text-xs text-slate-500">
+                          <p className="mt-1 max-w-md text-xs text-slate-500 dark:text-neutral-400">
                             {eintrag.errorMessage}
                           </p>
                         )}
@@ -251,7 +251,7 @@ export function SubmissionsPage() {
                         */}
                         <Link
                           to={`/admin/abgaben/${eintrag.id}`}
-                          className="rounded-lg px-3 py-1.5 font-medium text-indigo-700 hover:bg-indigo-50"
+                          className="rounded-lg px-3 py-1.5 font-medium text-indigo-700 hover:bg-indigo-50 dark:text-indigo-200 dark:hover:bg-indigo-500/10"
                         >
                           Ansehen
                         </Link>
@@ -262,7 +262,7 @@ export function SubmissionsPage() {
               </table>
             </div>
 
-            <div className="flex items-center justify-between text-sm text-slate-600">
+            <div className="flex items-center justify-between text-sm text-slate-600 dark:text-neutral-400">
               <span className="tabular-nums">
                 {seite.skip + 1}–{bisher} von {gesamt}
               </span>
@@ -272,7 +272,7 @@ export function SubmissionsPage() {
                   type="button"
                   disabled={!hatVorige}
                   onClick={() => setSkip(Math.max(0, skip - SEITENGROESSE))}
-                  className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-neutral-900"
                 >
                   <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                   Zurück
@@ -281,7 +281,7 @@ export function SubmissionsPage() {
                   type="button"
                   disabled={!hatWeitere}
                   onClick={() => setSkip(skip + SEITENGROESSE)}
-                  className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-neutral-900"
                 >
                   Weiter
                   <ChevronRight className="h-4 w-4" aria-hidden="true" />

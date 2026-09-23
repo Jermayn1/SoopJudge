@@ -29,7 +29,7 @@ export function TestCaseEditor({ tests, onChange }: TestCaseEditorProps) {
     <div>
       <ul className="space-y-4">
         {tests.map((test, index) => (
-          <li key={index} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <li key={index} className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-neutral-950/60">
             <div className="mb-3 flex items-center gap-2">
               <OrderButtons
                 label={`Testfall ${index + 1}`}
@@ -38,12 +38,12 @@ export function TestCaseEditor({ tests, onChange }: TestCaseEditorProps) {
                 canMoveUp={index > 0}
                 canMoveDown={index < tests.length - 1}
               />
-              <span className="text-sm font-semibold text-slate-700">Testfall {index + 1}</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-neutral-300">Testfall {index + 1}</span>
               <button
                 type="button"
                 onClick={() => remove(index)}
                 aria-label={`Testfall ${index + 1} entfernen`}
-                className="ml-auto rounded-lg p-2 text-rose-800 hover:bg-rose-100"
+                className="ml-auto rounded-lg p-2 text-rose-800 hover:bg-rose-100 dark:text-rose-200 dark:hover:bg-rose-500/15"
               >
                 <Trash2 className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -83,7 +83,7 @@ export function TestCaseEditor({ tests, onChange }: TestCaseEditorProps) {
       </ul>
 
       {tests.length === 0 && (
-        <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+        <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-white/15 dark:text-neutral-400">
           Noch kein Testfall angelegt.
         </p>
       )}
@@ -91,7 +91,7 @@ export function TestCaseEditor({ tests, onChange }: TestCaseEditorProps) {
       <button
         type="button"
         onClick={() => onChange([...tests, { input: '', expectedOutput: '', description: '' }])}
-        className="mt-4 flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+        className="mt-4 flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
       >
         <Plus className="w-4 h-4" aria-hidden="true" />
         Testfall hinzufügen

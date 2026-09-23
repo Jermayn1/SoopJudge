@@ -216,5 +216,47 @@ namespace SoopWorkshop.Tests.Unit.Application.Submissions
             result.IsSuccess.ShouldBeFalse();
             result.ErrorMessage.ShouldContain("nicht gefunden");
         }
+
+        // Die Datenbank liefert die Vergleiche in beliebiger Reihenfolge. In der
+        // Anzeige sollen sie so stehen, wie der Test sie aufgerufen hat.
+        [Fact]
+        public async Task GetResultAsync_UebernimmtDieVergleicheSortiert()
+        {
+            var submissionId = Guid.NewGuid();
+            _submissionRepository.GetByIdAsync(submissionId)
+                .Returns(new Submission { Id = submissionId, Status = SubmissionStatus.Done });
+            _evaluationResultRepository.GetBySubmissionIdAsync(submissionId).Returns(new EvaluationResult
+            {
+                Id = Guid.NewGuid(),
+                SubmissionId = submissionId,
+                CategoryResults =
+                [
+                    new CategoryResult
+                    {
+                        Category = EvaluationCategory.Functionality,
+                        TestCaseResults =
+                        [
+                            new TestCaseResult
+                            {
+                                Description = "bezahlen liefert das Wechselgeld",
+                                Passed = true,
+                                Comparisons =
+                                [
+                                    new TestCaseComparison { Call = "kasse.anzahl()", Expected = "3", Actual = "3", Passed = true, Order = 1 },
+                                    new TestCaseComparison { Call = "kasse.bezahlen(20)", Expected = "7.5", Actual = "7.5", Passed = true, Order = 0 },
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            var result = await CreateService().GetResultAsync(submissionId);
+
+            var comparisons = result.Value!.CategoryResults.Single().TestCaseResults.Single().Comparisons;
+            comparisons.Select(c => c.Call).ShouldBe(["kasse.bezahlen(20)", "kasse.anzahl()"]);
+            comparisons[0].Expected.ShouldBe("7.5");
+            comparisons[0].Passed.ShouldBeTrue();
+        }
     }
 }

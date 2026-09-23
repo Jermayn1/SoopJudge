@@ -66,14 +66,72 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
                     Failed("Die Unit-Tests konnten ausgeführt werden", string.Empty));
             }
 
-            await WriteTestFilesAsync(context.WorkingDirectory, testFiles, cancellationToken);
+            var rewritten = testFiles.ToDictionary(file => file, file => AssertionRewriter.Rewrite(file.Content));
 
-            var compilation = await CompileTestFilesAsync(context.WorkingDirectory, jarPath, testFiles, cancellationToken);
+            await WriteTestFilesAsync(
+                context.WorkingDirectory, testFiles, file => rewritten[file].Source, cancellationToken);
+            await WriteHelperAsync(context.WorkingDirectory, cancellationToken);
+
+            var sources = testFiles.Select(file => Path.GetFileName(file.FileName)).Append(HelperPath).ToList();
+            var compilation = await CompileTestFilesAsync(context.WorkingDirectory, jarPath, sources, cancellationToken);
+            var callSites = CallSitesByClass(testFiles, rewritten);
+
+            if (!compilation.Success && !compilation.TimedOut && !compilation.ExecutableNotFound)
+            {
+                // Mit Umleitung gescheitert. Meist liegt es an der Abgabe, dann
+                // soll der Teilnehmer die Meldung zu seiner eigenen Datei sehen
+                // und nicht eine zu soopjudge.Werte. Und passt die Hilfsklasse
+                // einmal nicht zu einer Testdatei, darf das keine Note kosten -
+                // es fehlen dann nur die Werte.
+                await WriteTestFilesAsync(context.WorkingDirectory, testFiles, file => file.Content, cancellationToken);
+                compilation = await CompileTestFilesAsync(
+                    context.WorkingDirectory,
+                    jarPath,
+                    testFiles.Select(file => Path.GetFileName(file.FileName)).ToList(),
+                    cancellationToken);
+
+                if (compilation.Success)
+                {
+                    _logger.LogWarning(
+                        "JUnit-Testdateien uebersetzen nur ohne Umleitung auf soopjudge.Werte. Die Werte bestandener Pruefungen fehlen in diesem Lauf.");
+                }
+
+                callSites = [];
+            }
+
             if (!compilation.Success)
                 return DescribeCompilationFailure(compilation);
 
-            return await RunAsync(context.WorkingDirectory, jarPath, testFiles, cancellationToken);
+            return await RunAsync(context.WorkingDirectory, jarPath, testFiles, callSites, cancellationToken);
         }
+
+        // Liegt als Unterordner neben den Testdateien: soopjudge.Werte steht in
+        // einem Paket, weil sich aus dem Standardpaket nichts importieren lässt.
+        private static readonly string HelperPath = Path.Combine("soopjudge", "Werte.java");
+
+        private const string HelperResource = "SoopWorkshop.Werte.java";
+
+        private static async Task WriteHelperAsync(string workingDirectory, CancellationToken cancellationToken)
+        {
+            await using var stream = typeof(JUnitChecker).Assembly.GetManifestResourceStream(HelperResource)
+                ?? throw new InvalidOperationException(
+                    $"Die Ressource '{HelperResource}' fehlt in der Infrastructure-Assembly.");
+
+            var target = Path.Combine(workingDirectory, HelperPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+
+            await using var file = File.Create(target);
+            await stream.CopyToAsync(file, cancellationToken);
+        }
+
+        // Die Aufrufstellen je Testklasse. Die Klasse heißt in Java wie ihre
+        // Datei, und Werte meldet den Klassennamen des Aufrufers.
+        private static Dictionary<string, IReadOnlyList<AssertionRewriter.CallSite>> CallSitesByClass(
+            List<TaskUnitTestFile> testFiles,
+            Dictionary<TaskUnitTestFile, AssertionRewriter.Result> rewritten) =>
+            testFiles.ToDictionary(
+                file => Path.GetFileNameWithoutExtension(file.FileName),
+                file => rewritten[file].CallSites);
 
         private string ResolveJarPath() =>
             Path.IsPathRooted(_options.JUnitJarPath)
@@ -83,6 +141,7 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
         private static async Task WriteTestFilesAsync(
             string workingDirectory,
             List<TaskUnitTestFile> testFiles,
+            Func<TaskUnitTestFile, string> content,
             CancellationToken cancellationToken)
         {
             foreach (var file in testFiles)
@@ -91,14 +150,14 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
                 // Arbeitsverzeichnis, niemals ein Pfad.
                 var fileName = Path.GetFileName(file.FileName);
                 await File.WriteAllTextAsync(
-                    Path.Combine(workingDirectory, fileName), file.Content, cancellationToken);
+                    Path.Combine(workingDirectory, fileName), content(file), cancellationToken);
             }
         }
 
         private async Task<ProcessResult> CompileTestFilesAsync(
             string workingDirectory,
             string jarPath,
-            List<TaskUnitTestFile> testFiles,
+            List<string> sources,
             CancellationToken cancellationToken)
         {
             var arguments = new List<string>
@@ -112,7 +171,7 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
                 "-cp", $"{jarPath}{Path.PathSeparator}."
             };
 
-            arguments.AddRange(testFiles.Select(file => Path.GetFileName(file.FileName)));
+            arguments.AddRange(sources);
 
             return await _processRunner.RunAsync(
                 new ProcessRequest(
@@ -163,6 +222,7 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
             string workingDirectory,
             string jarPath,
             List<TaskUnitTestFile> testFiles,
+            Dictionary<string, IReadOnlyList<AssertionRewriter.CallSite>> callSites,
             CancellationToken cancellationToken)
         {
             var reportsDirectory = Path.Combine(workingDirectory, ReportsDirectoryName);
@@ -179,7 +239,11 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
                 "--reports-dir", ReportsDirectoryName,
                 "--disable-banner",
                 "--disable-ansi-colors",
-                "--details=none"
+                "--details=none",
+
+                // Legt die Ausgabe auf System.err je Testfall in den Report.
+                // Dort stehen die Vergleiche, die soopjudge.Werte mitschreibt.
+                "--config=junit.platform.output.capture.stderr=true"
             };
 
             // Klassen ausdrücklich auswählen statt den Classpath zu durchsuchen:
@@ -218,7 +282,7 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
             if (testCases.Count == 0)
                 return DescribeMissingReport(process);
 
-            var results = testCases.Select(ToTestCaseResult).ToArray();
+            var results = testCases.Select(testCase => ToTestCaseResult(testCase, callSites)).ToArray();
 
             return results.All(result => result.Passed)
                 ? CheckerOutcome.Of(results)
@@ -234,7 +298,9 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
         //  - Sie ließ sich nicht zerlegen (NullPointerException, assertTrue).
         //    Dann gehört die ganze Meldung unter "Erhalten"; im Anzeigenamen
         //    wäre ein Stacktrace-Fetzen unlesbar.
-        private static TestCaseResult ToTestCaseResult(JUnitTestCase testCase)
+        private TestCaseResult ToTestCaseResult(
+            JUnitTestCase testCase,
+            Dictionary<string, IReadOnlyList<AssertionRewriter.CallSite>> callSites)
         {
             var wasSplit = testCase.Expected.Length > 0 || testCase.Actual.Length > 0;
 
@@ -246,8 +312,51 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Checkers
                     : testCase.DisplayName,
                 ExpectedOutput = testCase.Expected,
                 ActualOutput = wasSplit ? testCase.Actual : testCase.Message,
-                Passed = testCase.Passed
+                Passed = testCase.Passed,
+                Comparisons = ToComparisons(testCase, callSites)
             };
+        }
+
+        // Eine Schleife über hundert Werte ergäbe hundert Zeilen, die niemand
+        // mehr liest. Die ersten reichen, um zu sehen, womit geprüft wurde.
+        private const int MaxComparisons = 50;
+
+        private List<TestCaseComparison> ToComparisons(
+            JUnitTestCase testCase,
+            Dictionary<string, IReadOnlyList<AssertionRewriter.CallSite>> callSites)
+        {
+            if (testCase.Comparisons.Count > MaxComparisons)
+            {
+                _logger.LogInformation(
+                    "Testfall {Test} hat {Count} Vergleiche mitgeschrieben, gespeichert werden die ersten {Max}.",
+                    testCase.DisplayName, testCase.Comparisons.Count, MaxComparisons);
+            }
+
+            return testCase.Comparisons
+                .Take(MaxComparisons)
+                .Select((recorded, index) => new TestCaseComparison
+                {
+                    Id = Guid.NewGuid(),
+                    Call = FindCall(recorded, callSites) ?? string.Empty,
+                    Expected = recorded.Expected,
+                    Actual = recorded.Actual,
+                    Passed = recorded.Passed,
+                    Order = index
+                })
+                .ToList();
+        }
+
+        // Werte meldet Klasse und Zeile des Aufrufs. Eine innere Klasse heißt
+        // für Java "KasseTest$Rechnung", ihre Datei aber KasseTest.java.
+        private static string? FindCall(
+            RecordedComparison recorded,
+            Dictionary<string, IReadOnlyList<AssertionRewriter.CallSite>> callSites)
+        {
+            var className = recorded.ClassName.Split('$')[0];
+            if (!callSites.TryGetValue(className, out var sites))
+                return null;
+
+            return sites.FirstOrDefault(site => site.Line == recorded.Line && site.Method == recorded.Method)?.Call;
         }
 
         // Kein Report trotz gelaufenem Prozess. Der häufigste Grund ist ein

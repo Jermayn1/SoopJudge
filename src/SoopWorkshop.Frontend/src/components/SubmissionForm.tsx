@@ -63,7 +63,7 @@ export function SubmissionForm({
   return (
     <>
       <div className="mb-4 flex items-center justify-between gap-4 flex-wrap">
-        <h2 className="text-xl font-bold text-slate-800">Lösung abgeben</h2>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-neutral-100">Lösung abgeben</h2>
         {files.length > 0 && (
           <button
             type="button"
@@ -72,7 +72,7 @@ export function SubmissionForm({
               setRejections([])
               setServerError(null)
             }}
-            className="text-sm text-rose-700 font-semibold hover:underline"
+            className="text-sm text-rose-700 font-semibold hover:underline dark:text-rose-200"
           >
             Alle entfernen
           </button>
@@ -93,10 +93,10 @@ export function SubmissionForm({
         onClick={() => inputRef.current?.click()}
         className={`group relative border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center transition-all cursor-pointer ${
           dragging
-            ? 'bg-indigo-50 border-indigo-500 shadow-xl shadow-indigo-50'
+            ? 'bg-indigo-50 border-indigo-500 shadow-xl shadow-indigo-50 dark:bg-indigo-500/10 dark:border-indigo-400 dark:shadow-black/30'
             : files.length > 0
-              ? 'bg-emerald-50 border-emerald-300'
-              : 'bg-slate-50 border-slate-300 hover:bg-white hover:border-indigo-400 hover:shadow-xl hover:shadow-indigo-50'
+              ? 'bg-emerald-50 border-emerald-300 dark:bg-emerald-500/10 dark:border-emerald-400/40'
+              : 'bg-slate-50 border-slate-300 hover:bg-white hover:border-indigo-400 hover:shadow-xl hover:shadow-indigo-50 dark:bg-neutral-900/50 dark:border-white/15 dark:hover:bg-neutral-700/40 dark:hover:shadow-black/30'
         }`}
       >
         <input
@@ -112,28 +112,28 @@ export function SubmissionForm({
         />
         {files.length === 0 ? (
           <div key="leer" className="text-center">
-            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-slate-100 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-              <Upload className="w-10 h-10 text-indigo-600" aria-hidden="true" />
+            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-slate-100 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 dark:bg-neutral-800 dark:border-white/10">
+              <Upload className="w-10 h-10 text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
             </div>
-            <p className="text-xl font-bold text-slate-800 mb-1">
+            <p className="text-xl font-bold text-slate-800 mb-1 dark:text-neutral-100">
               Zieh deine .java-Dateien hierher
             </p>
-            <p className="text-slate-600">oder klicke, um sie auszuwählen</p>
+            <p className="text-slate-600 dark:text-neutral-400">oder klicke, um sie auszuwählen</p>
           </div>
         ) : (
           <div key="gewaehlt" className="text-center">
-            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-emerald-100 mb-6 mx-auto scale-110">
-              <FileCode2 className="w-10 h-10 text-emerald-700" aria-hidden="true" />
+            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-emerald-100 mb-6 mx-auto scale-110 dark:bg-neutral-800 dark:border-emerald-400/20">
+              <FileCode2 className="w-10 h-10 text-emerald-700 dark:text-emerald-200" aria-hidden="true" />
             </div>
-            <p className="text-xl font-bold text-slate-800 mb-1">
+            <p className="text-xl font-bold text-slate-800 mb-1 dark:text-neutral-100">
               {files.length === 1 ? '1 Datei' : `${files.length} Dateien`} bereit
             </p>
-            <p className="text-emerald-800 font-medium">Klicke, um weitere hinzuzufügen</p>
+            <p className="text-emerald-800 font-medium dark:text-emerald-200">Klicke, um weitere hinzuzufügen</p>
           </div>
         )}
 
         {/* Die Grenzen stehen da, bevor jemand dagegen läuft. */}
-        <p className="mt-6 text-xs text-slate-600 text-center">
+        <p className="mt-6 text-xs text-slate-600 text-center dark:text-neutral-400">
           {UPLOAD_LIMITS.allowedExtension} · höchstens {UPLOAD_LIMITS.maxFileCount} Dateien ·{' '}
           {formatBytes(UPLOAD_LIMITS.maxFileSizeBytes)} je Datei ·{' '}
           {formatBytes(UPLOAD_LIMITS.maxTotalSizeBytes)} gesamt
@@ -146,22 +146,22 @@ export function SubmissionForm({
             <li
               key={file.name}
               style={{ animationDelay: `${index * 45}ms` }}
-              className="anim-links flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5"
+              className="anim-links flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-neutral-900"
             >
-              <FileCode2 className="w-4 h-4 text-slate-500 shrink-0" aria-hidden="true" />
-              <span className="font-mono text-sm text-slate-800 truncate flex-1">{file.name}</span>
-              <span className="text-xs text-slate-600 shrink-0">{formatBytes(file.size)}</span>
+              <FileCode2 className="w-4 h-4 text-slate-500 shrink-0 dark:text-neutral-400" aria-hidden="true" />
+              <span className="font-mono text-sm text-slate-800 truncate flex-1 dark:text-neutral-100">{file.name}</span>
+              <span className="text-xs text-slate-600 shrink-0 dark:text-neutral-400">{formatBytes(file.size)}</span>
               <button
                 type="button"
                 onClick={() => setFiles((current) => current.filter((f) => f !== file))}
                 aria-label={`${file.name} entfernen`}
-                className="p-1 rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-rose-700"
+                className="p-1 rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-rose-700 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-rose-200"
               >
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </li>
           ))}
-          <li className="px-4 text-xs text-slate-600">
+          <li className="px-4 text-xs text-slate-600 dark:text-neutral-400">
             {files.length} von {UPLOAD_LIMITS.maxFileCount} Dateien · {formatBytes(totalBytes)} gesamt
           </li>
         </ul>
@@ -169,9 +169,9 @@ export function SubmissionForm({
 
       {/* Eine verworfene Datei verschwindet nicht kommentarlos. */}
       {rejections.length > 0 && (
-        <ul className="anim-auf mt-4 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <ul className="anim-auf mt-4 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-400/30 dark:bg-amber-500/10">
           {rejections.map((reason) => (
-            <li key={reason} className="flex gap-2 text-sm text-amber-900">
+            <li key={reason} className="flex gap-2 text-sm text-amber-900 dark:text-amber-200">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
               {reason}
             </li>
@@ -186,8 +186,8 @@ export function SubmissionForm({
           onClick={submit}
           className={`px-10 py-4 rounded-xl font-bold text-lg transition-all flex items-center gap-3 ${
             files.length === 0 || sending
-              ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-2xl shadow-indigo-200 hover:-translate-y-1 active:translate-y-0'
+              ? 'bg-slate-200 text-slate-500 cursor-not-allowed dark:bg-neutral-800 dark:text-neutral-400'
+              : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-2xl shadow-indigo-200 hover:-translate-y-1 active:translate-y-0 dark:shadow-black/30'
           }`}
         >
           {sending ? (
@@ -207,7 +207,7 @@ export function SubmissionForm({
       {serverError && (
         <div
           role="alert"
-          className="anim-auf mt-4 flex gap-2 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800"
+          className="anim-auf mt-4 flex gap-2 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
         >
           <FileText className="w-5 h-5 shrink-0" aria-hidden="true" />
           <p>{serverError}</p>

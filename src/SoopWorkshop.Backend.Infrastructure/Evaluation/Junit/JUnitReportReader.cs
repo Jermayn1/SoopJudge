@@ -1,3 +1,4 @@
+using System.Xml;
 using System.Xml.Linq;
 
 namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Junit
@@ -32,9 +33,9 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Junit
 
             try
             {
-                document = XDocument.Load(path);
+                document = XDocument.Parse(RemoveInvalidCharacters(File.ReadAllText(path)));
             }
-            catch (System.Xml.XmlException)
+            catch (XmlException)
             {
                 // Abgeschnittener Report, etwa weil die JVM mitten im Lauf beendet
                 // wurde. Der Aufrufer erkennt das an der fehlenden Testmethode und
@@ -64,9 +65,45 @@ namespace SoopWorkshop.Backend.Infrastructure.Evaluation.Junit
                     passed,
                     comparison.Message,
                     comparison.Expected,
-                    comparison.Actual);
+                    comparison.Actual,
+                    ReadComparisons(element));
             }
         }
+
+        // Seit die Ausgabe auf System.err in den Report wandert, steht dort
+        // auch, was die Abgabe selbst schreibt - samt Steuerzeichen, die XML
+        // nicht erlaubt und die der Launcher roh übernimmt. Der Parser verwürfe
+        // dann den ganzen Report, und die Kategorie fiele durch, obwohl alle
+        // Tests bestanden haben. XmlReaderSettings.CheckCharacters hilft dabei
+        // nicht: bei rohen Zeichen in CDATA wirft .NET trotzdem.
+        private static string RemoveInvalidCharacters(string xml)
+        {
+            if (xml.All(XmlConvert.IsXmlChar))
+                return xml;
+
+            var builder = new System.Text.StringBuilder(xml.Length);
+            for (var i = 0; i < xml.Length; i++)
+            {
+                var c = xml[i];
+                if (XmlConvert.IsXmlChar(c))
+                    builder.Append(c);
+                else if (char.IsHighSurrogate(c) && i + 1 < xml.Length && XmlConvert.IsXmlSurrogatePair(xml[i + 1], c))
+                    builder.Append(c).Append(xml[++i]);
+                else
+                    builder.Append('�');
+            }
+
+            return builder.ToString();
+        }
+
+        // Was soopjudge.Werte in diesem Testfall mitgeschrieben hat. Der
+        // Launcher legt die Ausgabe auf System.err je Testfall ab.
+        private static List<RecordedComparison> ReadComparisons(XElement testCase) =>
+            testCase.Elements("system-err")
+                .SelectMany(element => element.Value.Split('\n'))
+                .Select(RecordedComparison.TryParse)
+                .OfType<RecordedComparison>()
+                .ToList();
 
         // Der Launcher legt den @DisplayName in system-out ab, als Zeile
         // "display-name: JUnit Jupiter > MainTest > main gibt Hallo Soop aus".

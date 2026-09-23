@@ -70,18 +70,18 @@ export function LineNumberedEditor({
 
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-semibold text-slate-700">
+      <label htmlFor={id} className="block text-sm font-semibold text-slate-700 dark:text-neutral-300">
         {label}
       </label>
-      {hint && <p className="mt-0.5 text-xs text-slate-500">{hint}</p>}
+      {hint && <p className="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{hint}</p>}
 
-      <div className="mt-1.5 flex overflow-hidden rounded-xl border border-slate-300 bg-slate-900 font-mono text-sm">
+      <div className="mt-1.5 flex overflow-hidden rounded-xl border border-slate-300 bg-slate-900 font-mono text-sm dark:border-white/15 dark:bg-neutral-950">
         {/* Die Nummernspalte scrollt nicht selbst, sie wird vom Textfeld
             mitgezogen — deshalb overflow-hidden und der onScroll unten. */}
         <div
           ref={nummernRef}
           aria-hidden="true"
-          className="max-h-[32rem] shrink-0 select-none overflow-hidden bg-slate-800 px-3 py-3 text-right leading-6 text-slate-500 tabular-nums"
+          className="max-h-[32rem] shrink-0 select-none overflow-hidden bg-slate-800 px-3 py-3 text-right leading-6 text-slate-500 tabular-nums dark:bg-neutral-900 dark:text-neutral-400"
         >
           {Array.from({ length: zeilen }, (_, i) => (
             <div key={i}>{i + 1}</div>
@@ -102,11 +102,11 @@ export function LineNumberedEditor({
           // Java-Quelltext wird nicht umbrochen: eine automatisch umgebrochene
           // Zeile stimmt nicht mehr mit ihrer Nummer daneben überein.
           wrap="off"
-          className="max-h-[32rem] flex-1 resize-y bg-slate-900 px-3 py-3 leading-6 text-slate-100 outline-none"
+          className="max-h-[32rem] flex-1 resize-y bg-slate-900 px-3 py-3 leading-6 text-slate-100 outline-none dark:bg-neutral-950 dark:text-neutral-100"
         />
       </div>
 
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-xs text-slate-500 dark:text-neutral-400">
         Tab rückt ein. Mit Escape und dann Tab springst du aus dem Feld heraus.
       </p>
     </div>

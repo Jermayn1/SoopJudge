@@ -255,6 +255,12 @@ namespace SoopWorkshop.Tests.Integration.Repositories
                 var teilpruefung = kategorie.TestCaseResults.ShouldHaveSingleItem();
                 teilpruefung.ExpectedOutput.ShouldBe("Stand: 100");
                 teilpruefung.ActualOutput.ShouldBe("Stand: 0");
+
+                // Die dritte Ebene. Fehlt ihr ThenInclude, stünde jede JUnit-
+                // Prüfung ohne Werte da, ohne dass irgendwo ein Fehler auftritt.
+                var vergleich = teilpruefung.Comparisons.ShouldHaveSingleItem();
+                vergleich.Call.ShouldBe("konto.getStand()");
+                vergleich.Actual.ShouldBe("0");
             });
         }
 

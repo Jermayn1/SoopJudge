@@ -42,11 +42,11 @@ export function TaskPage() {
 
   if (state.kind === 'loading') {
     return (
-      <div className="flex-1 overflow-y-auto bg-white p-8">
+      <div className="flex-1 overflow-y-auto bg-white p-8 dark:bg-neutral-950">
         <div className="max-w-4xl mx-auto w-full space-y-6" aria-hidden="true">
-          <div className="h-6 w-40 rounded-full bg-slate-200 animate-pulse" />
-          <div className="h-10 w-2/3 rounded bg-slate-200 animate-pulse" />
-          <div className="h-40 rounded-2xl bg-slate-100 animate-pulse" />
+          <div className="h-6 w-40 rounded-full bg-slate-200 animate-pulse dark:bg-neutral-800" />
+          <div className="h-10 w-2/3 rounded bg-slate-200 animate-pulse dark:bg-neutral-800" />
+          <div className="h-40 rounded-2xl bg-slate-100 animate-pulse dark:bg-neutral-800" />
         </div>
       </div>
     )
@@ -55,20 +55,20 @@ export function TaskPage() {
   if (state.kind !== 'ok') {
     const unreachable = state.kind === 'unreachable'
     return (
-      <div className="flex-1 flex items-center justify-center bg-white p-8">
+      <div className="flex-1 flex items-center justify-center bg-white p-8 dark:bg-neutral-950">
         <div className="max-w-md text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
-            <AlertCircle className="w-8 h-8 text-slate-500" aria-hidden="true" />
+          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-5 dark:bg-neutral-800">
+            <AlertCircle className="w-8 h-8 text-slate-500 dark:text-neutral-400" aria-hidden="true" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">
+          <h2 className="text-2xl font-bold text-slate-800 mb-2 dark:text-neutral-100">
             {unreachable ? 'Der Server antwortet nicht' : 'Diese Aufgabe gibt es nicht'}
           </h2>
-          <p className="text-slate-600">{state.message}</p>
+          <p className="text-slate-600 dark:text-neutral-400">{state.message}</p>
           {unreachable && (
             <button
               type="button"
               onClick={() => setAttempt((n) => n + 1)}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 dark:shadow-black/30"
             >
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
               Erneut versuchen
@@ -80,7 +80,7 @@ export function TaskPage() {
   }
 
   return (
-    <div className="flex-1 bg-white flex flex-col p-8 overflow-y-auto">
+    <div className="flex-1 bg-white flex flex-col p-8 overflow-y-auto dark:bg-neutral-950">
       <div className="max-w-4xl mx-auto w-full pb-20">
         <TaskView task={state.task} />
 

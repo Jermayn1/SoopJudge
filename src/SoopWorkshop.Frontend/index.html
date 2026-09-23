@@ -3,6 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <!--
+      Hell oder dunkel muss feststehen, bevor irgendetwas gezeichnet wird.
+      Wartet die Entscheidung auf React, steht die Seite beim Laden erst kurz
+      weiss da und springt dann um. Deshalb ein kleines Skript hier oben, vor
+      allem anderen.
+
+      Dieselbe Regel steht in src/theme/theme.ts (resolveTheme). Wer sie hier
+      aendert, aendert sie dort mit; theme.test.ts laesst dieses Skript gegen
+      resolveTheme laufen und faellt sonst durch.
+    -->
+    <script id="theme-vorab">
+      (function () {
+        var stored = null
+        try {
+          stored = localStorage.getItem('soop-judge.theme')
+        } catch (cause) {
+          // Privates Fenster oder gesperrter Speicher. Dann gilt eben das
+          // Betriebssystem, gemerkt wird nichts.
+          console.warn('Die Wahl hell/dunkel ist nicht lesbar, es gilt das System.', cause)
+        }
+        var dark =
+          stored === 'dark' ||
+          (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', dark)
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+      })()
+    </script>
+    <!--
       Drei Angaben, weil ein Format allein nicht reicht: Safari benutzt
       SVG-Favicons nicht zuverlaessig und zeigte auf dem Mac gar kein Symbol,
       deshalb liegt das Zeichen nur noch als Rastergrafik vor. Die .ico traegt

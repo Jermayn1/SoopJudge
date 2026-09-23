@@ -18,7 +18,7 @@ import { formatDateTime } from '../formatDateTime'
 // Änderung dreifach verschieden wäre.
 function Seite({ children }: { children: ReactNode }) {
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-4xl space-y-6">{children}</div>
     </div>
   )
@@ -74,7 +74,7 @@ export function SubmissionDetailPage() {
   const zurueck = (
     <Link
       to="/admin/abgaben"
-      className="group flex w-fit items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-indigo-700"
+      className="group flex w-fit items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-indigo-700 dark:text-neutral-400 dark:hover:text-indigo-200"
     >
       <ArrowLeft
         className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
@@ -88,7 +88,7 @@ export function SubmissionDetailPage() {
     return (
       <Seite>
         {zurueck}
-        <div className="flex items-center gap-2 text-slate-500">
+        <div className="flex items-center gap-2 text-slate-500 dark:text-neutral-400">
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           Wird geladen …
         </div>
@@ -100,7 +100,7 @@ export function SubmissionDetailPage() {
     return (
       <Seite>
         {zurueck}
-        <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-900">
+        <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-900 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
           <div>
             <p className="font-medium">
@@ -121,11 +121,11 @@ export function SubmissionDetailPage() {
       {zurueck}
 
       <header>
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">
           {detail?.categoryName}
         </p>
-        <h1 className="text-2xl font-bold text-slate-800">{detail?.taskTitle}</h1>
-        <p className="text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">{detail?.taskTitle}</h1>
+        <p className="text-sm text-slate-500 dark:text-neutral-400">
           Abgegeben am {formatDateTime(detail?.submittedAt ?? '')}
         </p>
       </header>
@@ -142,12 +142,12 @@ export function SubmissionDetailPage() {
             bekommen verschiedene Texte — genau wie beim Teilnehmer. */}
         {(phase.kind === 'idle' || phase.kind === 'pending' || phase.kind === 'running') && (
           <div
-            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-6"
+            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-6 dark:border-white/10 dark:bg-neutral-950/60"
             role="status"
             aria-live="polite"
           >
-            <Loader2 className="h-5 w-5 shrink-0 animate-spin text-indigo-600" aria-hidden="true" />
-            <p className="text-sm text-slate-700">
+            <Loader2 className="h-5 w-5 shrink-0 animate-spin text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
+            <p className="text-sm text-slate-700 dark:text-neutral-300">
               {phase.kind === 'running'
                 ? 'Wird gerade geprüft — kompilieren, Testfälle, Unit-Tests.'
                 : 'In der Warteschlange.'}
@@ -156,20 +156,20 @@ export function SubmissionDetailPage() {
         )}
 
         {phase.kind === 'failed' && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4" role="alert">
-            <p className="font-semibold text-rose-800">Die Auswertung ist nicht durchgelaufen</p>
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 dark:border-rose-400/30 dark:bg-rose-500/10" role="alert">
+            <p className="font-semibold text-rose-800 dark:text-rose-200">Die Auswertung ist nicht durchgelaufen</p>
             {/* Der Grund des Servers im Wortlaut — kein stiller Fehlschlag. */}
-            <p className="mt-2 text-sm break-words whitespace-pre-wrap text-rose-800">
+            <p className="mt-2 text-sm break-words whitespace-pre-wrap text-rose-800 dark:text-rose-200">
               {phase.message}
             </p>
-            <p className="mt-2 text-sm text-rose-800">
+            <p className="mt-2 text-sm text-rose-800 dark:text-rose-200">
               Der abgegebene Code steht trotzdem darunter.
             </p>
           </div>
         )}
 
         {phase.kind === 'done' && (
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-white/10 dark:bg-neutral-950/60">
             <ResultView result={phase.result} />
           </div>
         )}
@@ -177,19 +177,19 @@ export function SubmissionDetailPage() {
 
       <section aria-labelledby="code-ueberschrift" className="space-y-4">
         <div className="flex items-center gap-2">
-          <FileCode2 className="h-5 w-5 text-slate-500" aria-hidden="true" />
-          <h2 id="code-ueberschrift" className="text-lg font-bold text-slate-800">
+          <FileCode2 className="h-5 w-5 text-slate-500 dark:text-neutral-400" aria-hidden="true" />
+          <h2 id="code-ueberschrift" className="text-lg font-bold text-slate-800 dark:text-neutral-100">
             Abgegebener Code
           </h2>
           {detail && detail.files.length > 0 && (
-            <span className="text-sm text-slate-500 tabular-nums">
+            <span className="text-sm text-slate-500 tabular-nums dark:text-neutral-400">
               {detail.files.length === 1 ? '1 Datei' : `${detail.files.length} Dateien`}
             </span>
           )}
         </div>
 
         {detail?.files.length === 0 ? (
-          <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-slate-500">
+          <p className="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center text-slate-500 dark:border-white/10 dark:bg-neutral-900 dark:text-neutral-400">
             Zu dieser Abgabe sind keine Dateien gespeichert.
           </p>
         ) : (

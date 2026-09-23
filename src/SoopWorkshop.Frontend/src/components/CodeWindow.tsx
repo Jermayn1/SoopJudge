@@ -95,8 +95,8 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
   // Der Dateiname darüber hängt dagegen an der Titelleiste, die selbst
   // „relative" trägt — er war nie betroffen.
   return (
-    <div className="relative overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-lg">
-      <div className="relative flex items-center border-b border-slate-700 bg-slate-800 px-4 py-2.5">
+    <div className="relative overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-lg dark:border-white/10 dark:bg-neutral-900">
+      <div className="relative flex items-center border-b border-slate-700 bg-slate-800 px-4 py-2.5 dark:border-white/10 dark:bg-neutral-800">
         {/* Reine Zier — deshalb aus der Vorlesereihenfolge heraus. */}
         <div className="flex shrink-0 gap-2" aria-hidden="true">
           <span className="h-3 w-3 rounded-full bg-rose-500" />
@@ -106,7 +106,7 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
 
         {/* Mittig über die ganze Leiste, mit Freiraum links und rechts, damit
             ein langer Dateiname nicht unter den Knöpfen verschwindet. */}
-        <span className="pointer-events-none absolute inset-x-0 truncate px-28 text-center font-mono text-xs text-slate-300">
+        <span className="pointer-events-none absolute inset-x-0 truncate px-28 text-center font-mono text-xs text-slate-300 dark:text-neutral-300">
           {fileName}
         </span>
 
@@ -114,7 +114,7 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
           <button
             type="button"
             onClick={() => void onCopy()}
-            className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-100"
+            className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-100 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-neutral-100"
           >
             {copyState === 'ok' ? (
               <Check className="h-3.5 w-3.5" aria-hidden="true" />
@@ -133,7 +133,7 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
             aria-expanded={open}
             aria-controls={regionId}
             aria-label={open ? `${fileName} einklappen` : `${fileName} ausklappen`}
-            className="rounded-md p-1 text-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-100"
+            className="rounded-md p-1 text-slate-300 transition-colors hover:bg-slate-700 hover:text-slate-100 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-neutral-100"
           >
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${open ? '' : '-rotate-90'}`}
@@ -155,7 +155,7 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
         <p
           role="status"
           aria-live="polite"
-          className="border-b border-slate-700 bg-slate-800 px-4 py-2 text-xs text-amber-200"
+          className="border-b border-slate-700 bg-slate-800 px-4 py-2 text-xs text-amber-200 dark:border-white/10 dark:bg-neutral-800 dark:text-amber-200"
         >
           Das Kopieren hat nicht geklappt — markiere den Text und nimm Strg+C.
         </p>
@@ -169,7 +169,7 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
           <div className="flex">
             <div
               aria-hidden="true"
-              className="shrink-0 select-none border-r border-slate-800 px-3 py-4 text-right font-mono text-xs leading-6 text-slate-400 tabular-nums"
+              className="shrink-0 select-none border-r border-slate-800 px-3 py-4 text-right font-mono text-xs leading-6 text-slate-400 tabular-nums dark:border-white/10 dark:text-neutral-400"
             >
               {Array.from({ length: lineCount }, (_, i) => (
                 <div key={i}>{i + 1}</div>
@@ -183,7 +183,7 @@ export function CodeWindow({ fileName, code }: CodeWindowProps) {
             <pre
               tabIndex={0}
               aria-label={`Quelltext von ${fileName}`}
-              className="flex-1 overflow-x-auto px-4 py-4 font-mono text-xs leading-6 text-slate-200"
+              className="flex-1 overflow-x-auto px-4 py-4 font-mono text-xs leading-6 text-slate-200 dark:text-neutral-200"
             >
               <code
                 className="language-java"

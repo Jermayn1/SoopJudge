@@ -18,6 +18,7 @@ namespace SoopWorkshop.Backend.Infrastructure.Persistence.Repositories
             return await _context.EvaluationResults
                 .Include(e => e.CategoryResults)
                     .ThenInclude(c => c.TestCaseResults)
+                        .ThenInclude(t => t.Comparisons)
                 .FirstOrDefaultAsync(e => e.SubmissionId == submissionId);
         }
 

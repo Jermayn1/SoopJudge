@@ -21,9 +21,9 @@ type Phase =
 
 function Zahl({ wert, label }: { wert: number; label: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-      <div className="text-2xl font-bold tabular-nums text-slate-800">{wert}</div>
-      <div className="text-xs text-slate-500">{label}</div>
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-neutral-900">
+      <div className="text-2xl font-bold tabular-nums text-slate-800 dark:text-neutral-100">{wert}</div>
+      <div className="text-xs text-slate-500 dark:text-neutral-400">{label}</div>
     </div>
   )
 }
@@ -116,11 +116,11 @@ export function TransferPage() {
   const kannImportieren = preview !== null && preview.errors.length === 0
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex-1 overflow-y-auto bg-slate-50 p-8 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-3xl space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Bestand übertragen</h1>
-          <p className="mt-1 text-slate-600">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">Bestand übertragen</h1>
+          <p className="mt-1 text-slate-600 dark:text-neutral-400">
             Der ganze Aufgabenbestand als eine Datei — gedacht, um ihn hier zu pflegen und auf
             dem Server einzuspielen. Abgaben und Auswertungen sind nicht enthalten.
           </p>
@@ -129,16 +129,16 @@ export function TransferPage() {
         {phase.kind === 'error' && (
           <div
             role="alert"
-            className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800"
+            className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200"
           >
             {phase.message}
           </div>
         )}
 
         {/* Export */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-800">Herunterladen</h2>
-          <p className="mt-1 text-sm text-slate-600">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-900">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-neutral-100">Herunterladen</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-neutral-400">
             {categories.length === 1 ? '1 Kategorie' : `${categories.length} Kategorien`} mit{' '}
             <span className="tabular-nums">{aufgabenImBestand}</span>{' '}
             {aufgabenImBestand === 1 ? 'Aufgabe' : 'Aufgaben'}, samt Vertrag, Testfällen,
@@ -149,7 +149,7 @@ export function TransferPage() {
             type="button"
             onClick={exportieren}
             disabled={phase.kind === 'busy'}
-            className="mt-4 flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none disabled:hover:translate-y-0"
+            className="mt-4 flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none disabled:hover:translate-y-0 dark:shadow-black/30 dark:disabled:bg-neutral-800"
           >
             <Download className="w-4 h-4" aria-hidden="true" />
             Als Datei speichern
@@ -157,43 +157,43 @@ export function TransferPage() {
         </section>
 
         {/* Import */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-800">Einspielen</h2>
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-900">
+          <h2 className="text-lg font-bold text-slate-800 dark:text-neutral-100">Einspielen</h2>
 
           <fieldset className="mt-4">
-            <legend className="text-sm font-semibold text-slate-700">Womit</legend>
+            <legend className="text-sm font-semibold text-slate-700 dark:text-neutral-300">Womit</legend>
 
             <div className="mt-2 space-y-2">
-              <label className="flex gap-3 rounded-xl border border-slate-200 p-3 transition-colors hover:bg-slate-50">
+              <label className="flex gap-3 rounded-xl border border-slate-200 p-3 transition-colors hover:bg-slate-50 dark:border-white/10 dark:hover:bg-white/5">
                 <input
                   type="radio"
                   name="modus"
                   checked={mode === 'Merge'}
                   onChange={() => setMode('Merge')}
-                  className="mt-1 h-4 w-4 shrink-0 text-indigo-600"
+                  className="mt-1 h-4 w-4 shrink-0 accent-indigo-600 dark:accent-indigo-400"
                 />
                 <span>
-                  <span className="block text-sm font-semibold text-slate-800">Zusammenführen</span>
-                  <span className="block text-xs text-slate-500">
+                  <span className="block text-sm font-semibold text-slate-800 dark:text-neutral-100">Zusammenführen</span>
+                  <span className="block text-xs text-slate-500 dark:text-neutral-400">
                     Was dieselbe Id hat, wird aktualisiert; Neues kommt dazu. Es wird nichts
                     gelöscht — auch nicht, was hier steht und in der Datei fehlt.
                   </span>
                 </span>
               </label>
 
-              <label className="flex gap-3 rounded-xl border border-slate-200 p-3 transition-colors hover:bg-slate-50">
+              <label className="flex gap-3 rounded-xl border border-slate-200 p-3 transition-colors hover:bg-slate-50 dark:border-white/10 dark:hover:bg-white/5">
                 <input
                   type="radio"
                   name="modus"
                   checked={mode === 'Replace'}
                   onChange={() => setMode('Replace')}
-                  className="mt-1 h-4 w-4 shrink-0 text-indigo-600"
+                  className="mt-1 h-4 w-4 shrink-0 accent-indigo-600 dark:accent-indigo-400"
                 />
                 <span>
-                  <span className="block text-sm font-semibold text-slate-800">Ersetzen</span>
-                  <span className="block text-xs text-slate-500">
+                  <span className="block text-sm font-semibold text-slate-800 dark:text-neutral-100">Ersetzen</span>
+                  <span className="block text-xs text-slate-500 dark:text-neutral-400">
                     Der Bestand wird geleert, danach ist die Datei die Wahrheit.{' '}
-                    <strong className="text-amber-900">
+                    <strong className="text-amber-900 dark:text-amber-200">
                       Nimmt alle abgegebenen Lösungen mit.
                     </strong>
                   </span>
@@ -206,7 +206,7 @@ export function TransferPage() {
             type="button"
             onClick={() => dateiRef.current?.click()}
             disabled={phase.kind === 'busy'}
-            className="mt-4 flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-4 flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
             <Upload className="w-4 h-4" aria-hidden="true" />
             Datei wählen …
@@ -224,7 +224,7 @@ export function TransferPage() {
           />
 
           {phase.kind === 'busy' && (
-            <p role="status" className="mt-4 flex items-center gap-2 text-sm text-slate-600">
+            <p role="status" className="mt-4 flex items-center gap-2 text-sm text-slate-600 dark:text-neutral-400">
               <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
               {phase.was}
             </p>
@@ -233,20 +233,20 @@ export function TransferPage() {
 
         {/* Vorschau */}
         {preview && (
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm anim-auf">
-            <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800">
-              <FileJson className="w-5 h-5 text-slate-500" aria-hidden="true" />
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm anim-auf dark:border-white/10 dark:bg-neutral-900">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-neutral-100">
+              <FileJson className="w-5 h-5 text-slate-500 dark:text-neutral-400" aria-hidden="true" />
               Das würde passieren
             </h2>
 
             {preview.errors.length > 0 ? (
               <div className="mt-4">
-                <p className="text-sm font-semibold text-rose-800">
+                <p className="text-sm font-semibold text-rose-800 dark:text-rose-200">
                   Die Datei hat {preview.errors.length}{' '}
                   {preview.errors.length === 1 ? 'Beanstandung' : 'Beanstandungen'}. Es wurde
                   nichts geändert.
                 </p>
-                <ul className="mt-2 space-y-1 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+                <ul className="mt-2 space-y-1 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-200">
                   {preview.errors.map((error) => (
                     <li key={error}>{error}</li>
                   ))}
@@ -261,7 +261,7 @@ export function TransferPage() {
                 {preview.warnings.map((warning) => (
                   <p
                     key={warning}
-                    className="mt-3 flex gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"
+                    className="mt-3 flex gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200"
                   >
                     <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" />
                     {warning}
@@ -272,7 +272,7 @@ export function TransferPage() {
                   type="button"
                   onClick={() => setBestaetigen(true)}
                   disabled={!kannImportieren}
-                  className="mt-5 flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
+                  className="mt-5 flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none dark:shadow-black/30 dark:disabled:bg-neutral-800"
                 >
                   <Upload className="w-4 h-4" aria-hidden="true" />
                   Jetzt einspielen
@@ -284,8 +284,8 @@ export function TransferPage() {
 
         {/* Ergebnis */}
         {phase.kind === 'done' && (
-          <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 anim-auf">
-            <h2 className="flex items-center gap-2 text-lg font-bold text-emerald-900">
+          <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 anim-auf dark:border-emerald-400/30 dark:bg-emerald-500/10">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-emerald-900 dark:text-emerald-200">
               <Check className="w-5 h-5" aria-hidden="true" />
               Eingespielt
             </h2>

@@ -127,6 +127,14 @@ function toTestCaseResult(dto: Schemas['TestCaseResultDto']): TestCaseResult {
     actualOutput: dto.actualOutput ?? '',
     passed: dto.passed ?? false,
     order: toNumber(dto.order),
+    // Das Backend liefert sie schon sortiert, und ein Feld für die Reihenfolge
+    // gibt es im Vertrag nicht - die Liste bleibt, wie sie kommt.
+    comparisons: (dto.comparisons ?? []).map((comparison) => ({
+      call: comparison.call ?? '',
+      expected: comparison.expected ?? '',
+      actual: comparison.actual ?? '',
+      passed: comparison.passed ?? false,
+    })),
   }
 }
 
